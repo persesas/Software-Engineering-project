@@ -13,9 +13,9 @@ Employee = id(str), name(str), age(int), address(str), boss(employee id)
 Department = id(str), leader(str), name(str), members(employee id list)
 Event = id(str), type(string), from(date), to(date), attendees(int)
 		preferences(str), budget(int), name(str), status(str)
+Task = id(str), subject(str), priority(int), sender(employee id), description(str)
 
 Support tables:
-Task = subject(str), priority(int), sender(employee id), description(str)
 Auth = username(str), password(hashed + salt str), salt(str)
 Team = boss(employee id), name(str), members(employee id list)
 """
@@ -52,7 +52,8 @@ class Database():
 		return self.tables_db[tbl_name].search(where(col_name)==value)
 
 	def get_login_data(self, username):
-		return self.tables_db['auth'].search(where('username')==username)
+		r = self.tables_db['auth'].search(where('username')==username)
+		return r[0] if r else []
 
 	#Insert/Update functions
 	def insert(self, tbl_name, data):

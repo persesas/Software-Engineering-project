@@ -27,7 +27,7 @@ class TestDatabase(unittest.TestCase):
     def test_02_new_user(self):
         db = Database(name=self.test_db)
         db.new_user('randomuser1', '12345', '12345')
-        r = db.get_login_data('randomuser1')[0]
+        r = db.get_login_data('randomuser1')
         self.assertIn('username', r)
         self.assertIn('password', r)
         self.assertIn('salt', r)
