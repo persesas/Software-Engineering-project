@@ -26,7 +26,6 @@ class Base(QtWidgets.QWidget):
         self.main_layout = QtWidgets.QVBoxLayout()
         self.main_layout.addLayout(top_layout)
         self.main_layout.addStretch(1)
-
         self.setLayout(self.main_layout)
         self.show()
 

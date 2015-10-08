@@ -2,7 +2,7 @@ from controller import Controller
 
 from view.base_template import Base
 from view.login_form import LoginForm
-
+from view.manager_tabs import ManagerTabs
 
 class Mediator():
 
@@ -17,7 +17,10 @@ class Mediator():
 
     def login(self):
         self.base = Base()
-        self.base.set_central_widget(LoginForm())
+        l = LoginForm()
+        l2 = LoginForm()
+        self.m = ManagerTabs({"tab1": l, "tab2": l2})
+        self.base.set_central_widget(self.m)
 
 def get_mediator(_instance=Mediator()):
     return _instance
