@@ -1,3 +1,5 @@
+import string
+import random
 from datetime import datetime
 
 import tinydb
@@ -9,14 +11,14 @@ from tinydb.middlewares import SerializationMiddleware
 """
 Main tables:
 Client = id(str), name(str), age(int), address(str), events(event ids)
-Employee = id(str), name(str), age(int), address(str), boss(employee id)
+Employee = id(str), name(str), age(int), address(str), boss(employee id), position(str)
 Department = id(str), leader(str), name(str), members(employee id list)
 Event = id(str), type(string), from(date), to(date), attendees(int)
 		preferences(str), budget(int), name(str), status(str)
 Task = id(str), subject(str), priority(int), sender(employee id), description(str)
 
 Support tables:
-Auth = username(str), password(hashed + salt str), salt(str)
+Auth = username(str), password(hashed + salt str), salt(str), user_id(cl, empl str)
 Team = boss(employee id), name(str), members(employee id list)
 """
 
@@ -41,7 +43,10 @@ class Database():
 		# Ensure that the tables exist
 		self.tables_db = {t:self.db.table(t) for t in self.tables}
 
-	# Get functions
+	def _gen_id(self, length=6, chars=string.digits):
+		return ''.join([ random.choice(chars) for _ in range(length)])
+
+	#Generic functions
 	def get_row_by_id(self, tbl_name, id):
 		# Search Client, Employee, Department, Event
 		return self.tables_db[tbl_name].search(where('id')==id)
@@ -51,17 +56,79 @@ class Database():
 		# invalid column
 		return self.tables_db[tbl_name].search(where(col_name)==value)
 
-	def get_login_data(self, username):
-		r = self.tables_db['auth'].search(where('username')==username)
-		return r[0] if r else []
-
-	#Insert/Update functions
 	def insert(self, tbl_name, data):
 		#data = {col1:data1, col2:data2, ...}
 		#name(test) = non empty and follow the rules, exists -> KeyError
 		#empty data on return(where=blabla) = []
 		self.tables_db[tbl_name].insert(data)
 
+	# Specific functions
+	def new_client(self, **kwargs):
+		# Client = id(str), name(str), age(int), address(str), events(event ids)
+		data = {'id': 'cl' + self._gen_id()}
+		data.update(kwargs)
+		self.insert('client', data)
+
+	def get_client(self, col_name, criteria, all=False):
+		if not all:
+			return self.tables_db['client'].search(where(col_name)==criteria)
+		else:
+			return self.tables_db['client'].all()
+
+	def new_employee(self, **kwargs):
+		# Employee = id(str), name(str), age(int), address(str), boss(employee id)
+		data = {'id': 'em' + self._gen_id()}
+		data.update(kwargs)
+		self.insert('employee', data)
+
+	def get_employee(self, col_name, criteria, all=False):
+		if not all:
+			return self.tables_db['employee'].search(where(col_name)==criteria)
+		else:
+			return self.tables_db['employee'].all()
+
+	def new_dept(self, **kwargs):
+		# Department = id(str), leader(str), name(str), members(employee id list)
+		data = {'id': 'dt' + self._gen_id()}
+		data.update(kwargs)
+		self.insert('dept', data)
+
+	def get_dept(self, col_name, criteria, all=False):
+		if not all:
+			return self.tables_db['dept'].search(where(col_name)==criteria)
+		else:
+			return self.tables_db['dept'].all()
+
+	def new_task(self, **kwargs):
+		# Task = id(str), subject(str), priority(int), sender(employee id), description(str)
+		data = {'id': 't' + self._gen_id()}
+		data.update(kwargs)
+		self.insert('task', data)
+
+	def get_task(self, col_name, criteria, all=False):
+		if not all:
+			return self.tables_db['task'].search(where(col_name)==criteria)
+		else:
+			return self.tables_db['task'].all()
+
+	def new_event(self, **kwargs):
+		# Event = id(str), type(string), from(date), to(date), attendees(int)
+		#         preferences(str), budget(int), name(str), status(str)
+		data = {'id': 'ev' + self._gen_id()}
+		data.update(kwargs)
+		self.insert('event', data)
+
+	def get_event(self, col_name, criteria, all=False):
+		if not all:
+			return self.tables_db['event'].search(where(col_name)==criteria)
+		else:
+			return self.tables_db['event'].all()
+
+	def get_login_data(self, username):
+		r = self.tables_db['auth'].search(where('username')==username)
+		return r[0] if r else []
+
+	# Create accounts(admin, pending)
 	def new_user(self, username, password, salt):
 		if self.get_login_data(username):
 			raise KeyError('User {} already exists.'.format(username))
@@ -69,8 +136,6 @@ class Database():
 									   'password':password,
 									   'salt':salt})
 
-	def delete_user(self, username):
-		self.tables_db['auth'].remove(where('username')==username)
 
 class DateTimeSerializer(Serializer):
 	OBJ_CLASS = datetime  # The class this serializer handles

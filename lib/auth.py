@@ -12,17 +12,27 @@ class Authentication():
 	def _gen_salt(self, length=6, chars=string.ascii_letters):
 		return ''.join([ random.choice(chars) for _ in range(length)])
 
-	def delete_user(self, username):
-		pass
+	def _gen_password(self):
+		return '12345'
 
-	def create_user(self, username, password):
+	def create_user(self, kind, username, **kwargs):
+		# Create client in the database
+		if kind == 'client':
+			self.db.new_client(**kwargs)
+		elif kind == 'employee':
+			self.db.new_employee(**kwargs)
+		else:
+			raise Exception()
+
+		#Create new user in the database
 		salt = self._gen_salt()
 
 		m = hashlib.sha256()
-		m.update(password.encode('utf-8'))
+		m.update(self._gen_password().encode('utf-8'))
 		m.update(salt.encode('utf-8'))
 
 		self.db.new_user(username, m.hexdigest(), salt)
+		#Client needs to know the password
 
 	def login(self, username, password):
 		#the user already exists
