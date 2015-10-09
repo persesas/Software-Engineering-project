@@ -18,9 +18,9 @@ class Authentication():
 	def create_user(self, kind, username, **kwargs):
 		# Create client in the database
 		if kind == 'client':
-			self.db.new_client(**kwargs)
+			user_id = self.db.new_client(**kwargs)
 		elif kind == 'employee':
-			self.db.new_employee(**kwargs)
+			user_id = self.db.new_employee(**kwargs)
 		else:
 			raise Exception()
 
@@ -31,7 +31,7 @@ class Authentication():
 		m.update(self._gen_password().encode('utf-8'))
 		m.update(salt.encode('utf-8'))
 
-		self.db.new_user(username, m.hexdigest(), salt)
+		self.db.new_user(username, m.hexdigest(), salt, user_id)
 		#Client needs to know the password
 
 	def login(self, username, password):

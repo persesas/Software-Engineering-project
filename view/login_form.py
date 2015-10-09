@@ -24,10 +24,10 @@ class LoginForm(QtWidgets.QWidget):
         self.wrong_login = QtWidgets.QLabel('(Invalid user/password)')
         self.wrong_login.setVisible(False)
 
-        self.userEdit = QtWidgets.QLineEdit("filox")
+        self.userEdit = QtWidgets.QLineEdit("f1")
         self.userEdit.returnPressed.connect(self.onLogin)
 
-        self.passwordEdit = QtWidgets.QLineEdit("1234")
+        self.passwordEdit = QtWidgets.QLineEdit("12345")
         self.passwordEdit.returnPressed.connect(self.onLogin)
         self.passwordEdit.setEchoMode(QtWidgets.QLineEdit.Password)
 
@@ -55,8 +55,9 @@ class LoginForm(QtWidgets.QWidget):
     def onLogin(self):
         from view.mediator import get_mediator
         m = get_mediator()
+
         if not m.check_credentials(self.userEdit.text(), self.passwordEdit.text()):
             self.wrong_login.setVisible(True)
         else:
             self.hide()
-            m.login()
+            m.login(self.userEdit.text())

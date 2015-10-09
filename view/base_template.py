@@ -1,20 +1,20 @@
-__author__ = 'anon'
-
 from PyQt5 import QtWidgets
 
 
 class Base(QtWidgets.QWidget):
-    def __init__(self):
+    def __init__(self, username):
         super().__init__()
-        from view import mediator as med
+
+        self.username = username
+
         self.initUI()
 
     def initUI(self):
         self.setGeometry(300, 150, 800, 600)
 
         # Initialize widgets
-        dpt_label = QtWidgets.QLabel('Department : ')
-        user_label = QtWidgets.QLabel('user:')
+        dpt_label = QtWidgets.QLabel('Blablablaa Department')
+        user_label = QtWidgets.QLabel('Logged in as: {}'.format(self.username))
 
         # Initialize top layout
         top_layout = QtWidgets.QHBoxLayout()
@@ -25,7 +25,6 @@ class Base(QtWidgets.QWidget):
         # Initialize main layout
         self.main_layout = QtWidgets.QVBoxLayout()
         self.main_layout.addLayout(top_layout)
-        self.main_layout.addStretch(1)
         self.setLayout(self.main_layout)
         self.show()
 

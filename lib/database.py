@@ -65,48 +65,60 @@ class Database():
 	# Specific functions
 	def new_client(self, **kwargs):
 		# Client = id(str), name(str), age(int), address(str), events(event ids)
-		data = {'id': 'cl' + self._gen_id()}
+		user_id = 'cl' + self._gen_id()
+		data = {'id': user_id}
 		data.update(kwargs)
 		self.insert('client', data)
 
-	def get_client(self, col_name, criteria, all=False):
-		if not all:
+		return user_id
+
+	def get_client(self, col_name, criteria, all_data=False):
+		if not all_data:
 			return self.tables_db['client'].search(where(col_name)==criteria)
 		else:
 			return self.tables_db['client'].all()
 
 	def new_employee(self, **kwargs):
 		# Employee = id(str), name(str), age(int), address(str), boss(employee id)
-		data = {'id': 'em' + self._gen_id()}
+		user_id = 'em' + self._gen_id()
+		data = {'id': user_id}
 		data.update(kwargs)
 		self.insert('employee', data)
 
-	def get_employee(self, col_name, criteria, all=False):
-		if not all:
+		return user_id
+
+	def get_employee(self, col_name, criteria, all_data=False):
+		if not all_data:
 			return self.tables_db['employee'].search(where(col_name)==criteria)
 		else:
 			return self.tables_db['employee'].all()
 
 	def new_dept(self, **kwargs):
 		# Department = id(str), leader(str), name(str), members(employee id list)
-		data = {'id': 'dt' + self._gen_id()}
+		user_id = 'dt' + self._gen_id()
+		data = {'id': user_id}
 		data.update(kwargs)
 		self.insert('dept', data)
 
-	def get_dept(self, col_name, criteria, all=False):
-		if not all:
+		return user_id
+
+	def get_dept(self, col_name, criteria, all_data=False):
+		if not all_data:
 			return self.tables_db['dept'].search(where(col_name)==criteria)
 		else:
 			return self.tables_db['dept'].all()
 
 	def new_task(self, **kwargs):
 		# Task = id(str), subject(str), priority(int), sender(employee id), description(str)
-		data = {'id': 't' + self._gen_id()}
+		user_id = 't' + self._gen_id()
+		data = {'id': user_id}
 		data.update(kwargs)
 		self.insert('task', data)
 
-	def get_task(self, col_name, criteria, all=False):
-		if not all:
+		return user_id
+
+	def get_task(self, col_name, criteria, all_data=False):
+		if not all_data:
 			return self.tables_db['task'].search(where(col_name)==criteria)
 		else:
 			return self.tables_db['task'].all()
@@ -114,12 +126,15 @@ class Database():
 	def new_event(self, **kwargs):
 		# Event = id(str), type(string), from(date), to(date), attendees(int)
 		#         preferences(str), budget(int), name(str), status(str)
-		data = {'id': 'ev' + self._gen_id()}
+		user_id = 'ev' + self._gen_id()
+		data = {'id': user_id}
 		data.update(kwargs)
 		self.insert('event', data)
 
-	def get_event(self, col_name, criteria, all=False):
-		if not all:
+		return user_id
+
+	def get_event(self, col_name, criteria, all_data=False):
+		if not all_data:
 			return self.tables_db['event'].search(where(col_name)==criteria)
 		else:
 			return self.tables_db['event'].all()
@@ -129,12 +144,14 @@ class Database():
 		return r[0] if r else []
 
 	# Create accounts(admin, pending)
-	def new_user(self, username, password, salt):
+	def new_user(self, username, password, salt, user_id):
 		if self.get_login_data(username):
 			raise KeyError('User {} already exists.'.format(username))
+
 		self.tables_db['auth'].insert({'username':username,
 									   'password':password,
-									   'salt':salt})
+									   'salt':salt,
+									   'user_id':user_id})
 
 
 class DateTimeSerializer(Serializer):

@@ -1,7 +1,6 @@
 from controller import Controller
 
 from view.base_template import Base
-from view.login_form import LoginForm
 from view.manager_tabs import ManagerTabs
 
 class Mediator():
@@ -9,18 +8,38 @@ class Mediator():
     base = None
 
     def __init__(self):
-        pass
+        self.c = Controller()
 
     def check_credentials(self, username, password):
-        c = Controller()
-        return c.login(username, password)
+        return self.c.login(username, password)
 
-    def login(self):
-        self.base = Base()
-        l = LoginForm()
-        l2 = LoginForm()
-        self.m = ManagerTabs({"tab1": l, "tab2": l2})
+    def login(self, username):
+        #Get that employee id, clients cant login...
+        user_id = self.c.get_user_id(username)
+        name = self.get_employee('id', user_id, False)[0]['name']
+
+        self.base = Base(name)
+        self.m = ManagerTabs()
         self.base.set_central_widget(self.m)
+
+    def get_client(self, col_name='', criteria='', all_data=True):
+        return self._get_data('client', col_name, criteria, all_data)
+
+    def get_employee(self, col_name='', criteria='', all_data=True):
+        return self._get_data('employee', col_name, criteria, all_data)
+
+    def get_dept(self, col_name='', criteria='', all_data=True):
+        return self._get_data('dept', col_name, criteria, all_data)
+
+    def get_task(self, col_name='', criteria='', all_data=True):
+        return self._get_data('task', col_name, criteria, all_data)
+
+    def get_event(self, col_name='', criteria='', all_data=True):
+        return self._get_data('event', col_name, criteria, all_data)
+
+    def _get_data(self, table, col_name, criteria, all_data):
+        return getattr(self.c, "get_%s" % table)(col_name, criteria, all_data)
+
 
 def get_mediator(_instance=Mediator()):
     return _instance
