@@ -5,6 +5,7 @@ from lib.auth import Authentication
 
 
 class Controller():
+
     def __init__(self):
         self.db = Database()
 

@@ -1,11 +1,20 @@
 from controller import Controller
 
 from view.base_template import Base
-from view.manager_tabs import ManagerTabs
+from view.tabs import ManagerTabs
 
 class Mediator():
 
     base = None
+
+    roles = {'1': 'cstm_srvc',
+             '2': 'snr_cs_offcr',
+             '3': 'hr',
+             '4': 'admin',
+             '5': 'fncl',
+             '6': 'prod',
+             '7': 'srvc',
+             '8': 'vp'}
 
     def __init__(self):
         self.c = Controller()
@@ -16,10 +25,12 @@ class Mediator():
     def login(self, username):
         #Get that employee id, clients cant login...
         user_id = self.c.get_user_id(username)
-        name = self.get_employee('id', user_id, False)[0]['name']
+        empl_data = self.get_employee('id', user_id, False)[0]
+        name = empl_data['name']
+        pos = empl_data['position']
 
-        self.base = Base(name)
-        self.m = ManagerTabs()
+        self.base = Base('{} - {}'.format(name, self.roles[pos]))
+        self.m = ManagerTabs(self.roles[pos])
         self.base.set_central_widget(self.m)
 
     def get_client(self, col_name='', criteria='', all_data=True):
