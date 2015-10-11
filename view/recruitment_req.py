@@ -10,7 +10,7 @@ class RecruitmentReq(QtWidgets.QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(500, 200, 350, 420)
+        # self.setGeometry(500, 200, 350, 420)
 
         # Initialize widgets
         title_label = QtWidgets.QLabel('Recruitment request')

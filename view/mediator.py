@@ -7,14 +7,14 @@ class Mediator():
 
     base = None
 
-    roles = {'1': 'cstm_srvc',
-             '2': 'snr_cs_offcr',
-             '3': 'hr',
-             '4': 'admin',
-             '5': 'fncl',
-             '6': 'prod',
-             '7': 'srvc',
-             '8': 'vp'}
+    roles = {'1': 'customer_service',
+             '2': 'senior_customer_service_officer',
+             '3': 'human_resources',
+             '4': 'administration',
+             '5': 'financial',
+             '6': 'production',
+             '7': 'service',
+             '8': 'vice_president'}
 
     def __init__(self):
         self.c = Controller()
@@ -29,7 +29,7 @@ class Mediator():
         name = empl_data['name']
         pos = empl_data['position']
 
-        self.base = Base('{} - {}'.format(name, self.roles[pos]))
+        self.base = Base(name, self.roles[pos].title().replace('_', ' '))
         self.m = ManagerTabs(self.roles[pos])
         self.base.set_central_widget(self.m)
 

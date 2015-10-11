@@ -10,7 +10,7 @@ class ClientReq(QtWidgets.QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(500, 200, 850, 420)
+        # self.setGeometry(500, 200, 850, 420)
 
         # --- TOP LEFT CORNER ---
         client_rec_no_label = QtWidgets.QLabel('Client record number :')

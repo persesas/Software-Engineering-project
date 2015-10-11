@@ -11,7 +11,7 @@ class EventPlanningReq(QtWidgets.QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(500, 200, 350, 420)
+        # self.setGeometry(500, 200, 350, 420)
 
         # Initialize widgets
         title = QtWidgets.QLabel('Request for Event Planning')

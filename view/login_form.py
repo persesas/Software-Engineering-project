@@ -24,7 +24,7 @@ class LoginForm(QtWidgets.QWidget):
         self.wrong_login = QtWidgets.QLabel('(Invalid user/password)')
         self.wrong_login.setVisible(False)
 
-        self.userEdit = QtWidgets.QLineEdit("f1")
+        self.userEdit = QtWidgets.QLineEdit("e1")
         self.userEdit.returnPressed.connect(self.onLogin)
 
         self.passwordEdit = QtWidgets.QLineEdit("12345")

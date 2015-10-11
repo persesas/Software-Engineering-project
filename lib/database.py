@@ -10,7 +10,8 @@ from tinydb.middlewares import SerializationMiddleware
 
 """
 Main tables:
-Client = id(str), name(str), age(int), address(str), events(event ids)
+Client = id(str), name(str), age(int), address(str), email(str), phone(str),
+		 events(event ids)
 Employee = id(str), name(str), age(int), address(str), boss(employee id), position(str)
 Department = id(str), leader(str), name(str), members(employee id list)
 Event = id(str), type(string), from(date), to(date), attendees(int)

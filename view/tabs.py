@@ -8,6 +8,9 @@ class ManagerTabs(QtWidgets.QWidget):
     employees = 'Employees'
     events = 'Events'
     tasks = 'Tasks'
+    cp_panel = 'Control Panel'
+    new_client = 'New Client'
+    hire = 'Hire requests'
 
     def __init__(self, empl_type):
         super().__init__()
@@ -53,48 +56,60 @@ class ManagerTabs(QtWidgets.QWidget):
 
         return event_table
 
-    # ...and hide what we dont want to show.
-    def _show_cstm_srvc(self):
-        self.tabs.addTab(self.employee_tab, self.employees)
-        self.tabs.addTab(self.client_tab, self.clients)
+    # ...and show only the related tabs.
+    def _show_customer_service(self):
+        from view.event_planning_req import EventPlanningReq
+        epr = EventPlanningReq()
+
+        self.tabs.addTab(epr, self.cp_panel)
 
         self.show()
 
-    def _show_snr_cs_offcr(self):
+    def _show_senior_customer_service_officer(self):
+        from view.client_req import ClientReq
+        cr = ClientReq()
+
+        self.tabs.addTab(self.client_tab, self.clients)
+        self.tabs.addTab(self.event_tab, self.events)
+        self.tabs.addTab(cr, self.new_client)
+
+        self.show()
+
+    def _show_human_resources(self):
+        from view.recruitment_req import RecruitmentReq
+        r = RecruitmentReq()
+
+        self.tabs.addTab(self.employee_tab, self.employees)
+        self.tabs.addTab(r,  self.hire)
+
+        self.show()
+
+    def _show_administration(self):
+        self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
 
         self.show()
 
-    def _show_hr(self):
-        self.tabs.addTab(self.employee_tab, self.employees)
-
-        self.show()
-
-    def _show_admin(self):
+    def _show_financial(self):
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
+        #Discounts??
 
         self.show()
 
-    def _show_fncl(self):
-        self.tabs.addTab(self.employee_tab, self.employees)
-        self.tabs.addTab(self.client_tab, self.clients)
-
-        self.show()
-
-    def _show_prod(self):
+    def _show_production(self):
         self.tabs.addTab(self.event_tab, self.events)
 
         self.show()
 
-    def _show_srvc(self):
+    def _show_service(self):
         self.tabs.addTab(self.event_tab, self.events)
 
         self.show()
 
-    def _show_vp(self):
+    def _show_vice_president(self):
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)

@@ -35,10 +35,12 @@ class Authentication():
 		#Client needs to know the password
 
 	def login(self, username, password):
-		#the user already exists
 		#retrieve the data from db
 		#test: no such user, wrong/correct login
 		info = self.db.get_login_data(username)
+		if not info:
+			#wrong username
+			return False
 
 		#generate the password
 		m = hashlib.sha256()
