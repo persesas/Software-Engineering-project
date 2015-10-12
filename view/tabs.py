@@ -57,6 +57,14 @@ class ManagerTabs(QtWidgets.QWidget):
         return event_table
 
     # ...and show only the related tabs.
+    def _show_team_member(self):
+        from view.event_planning_req import EventPlanningReq
+        epr = EventPlanningReq()
+
+        self.tabs.addTab(epr, self.cp_panel)
+
+        self.show()
+
     def _show_customer_service(self):
         from view.event_planning_req import EventPlanningReq
         epr = EventPlanningReq()
@@ -66,8 +74,13 @@ class ManagerTabs(QtWidgets.QWidget):
         self.show()
 
     def _show_senior_customer_service_officer(self):
+        # Retrieve the client IDs
+        from view.mediator import get_mediator
+        m = get_mediator()
+        ids = {c['id']:c['name'] for c in m.get_client()}
+
         from view.client_req import ClientReq
-        cr = ClientReq()
+        cr = ClientReq(ids)
 
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)

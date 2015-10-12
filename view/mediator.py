@@ -7,7 +7,8 @@ class Mediator():
 
     base = None
 
-    roles = {'1': 'customer_service',
+    roles = {'0': 'team_member',
+             '1': 'customer_service',
              '2': 'senior_customer_service_officer',
              '3': 'human_resources',
              '4': 'administration',

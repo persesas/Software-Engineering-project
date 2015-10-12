@@ -4,8 +4,10 @@ from PyQt5.QtCore import Qt
 
 
 class ClientReq(QtWidgets.QWidget):
-    def __init__(self):
+    def __init__(self, client_ids):
         super().__init__()
+
+        self.client_ids = client_ids
 
         self.initUI()
 
@@ -14,9 +16,15 @@ class ClientReq(QtWidgets.QWidget):
 
         # --- TOP LEFT CORNER ---
         client_rec_no_label = QtWidgets.QLabel('Client record number :')
-        client_rec_no_edit = QtWidgets.QLineEdit()
+        self.client_name_edit = QtWidgets.QLabel()
+
+        client_rec_no_edit = QtWidgets.QComboBox()
+        client_rec_no_edit.setEditable(False)
+        client_rec_no_edit.currentTextChanged.connect(self._client_changed)
+        client_rec_no_edit.addItems(self.client_ids.keys())
+        # comboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
+        #         QtGui.QSizePolicy.Preferred)
         client_name_label = QtWidgets.QLabel('Client name :')
-        client_name_edit = QtWidgets.QLineEdit()
         event_type_label = QtWidgets.QLabel('Event type :')
         event_type_edit = QtWidgets.QLineEdit()
         description_label = QtWidgets.QLabel('Description :')
@@ -37,7 +45,7 @@ class ClientReq(QtWidgets.QWidget):
         top_left_layout.addWidget(client_rec_no_label, 0, 0)
         top_left_layout.addWidget(client_rec_no_edit, 0, 1)
         top_left_layout.addWidget(client_name_label, 1, 0)
-        top_left_layout.addWidget(client_name_edit, 1, 1)
+        top_left_layout.addWidget(self.client_name_edit, 1, 1)
         top_left_layout.addWidget(event_type_label, 2, 0)
         top_left_layout.addWidget(event_type_edit, 2, 1)
         top_left_layout.addWidget(description_label, 3, 0)
@@ -124,3 +132,6 @@ class ClientReq(QtWidgets.QWidget):
 
         self.setLayout(main_layout)
         self.show()
+
+    def _client_changed(self, text):
+        self.client_name_edit.setText(self.client_ids[text])

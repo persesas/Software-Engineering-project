@@ -13,14 +13,14 @@ Main tables:
 Client = id(str), name(str), age(int), address(str), email(str), phone(str),
 		 events(event ids)
 Employee = id(str), name(str), age(int), address(str), boss(employee id), position(str)
-Department = id(str), leader(str), name(str), members(employee id list)
+Department = id(str), leader(str), name(str), members(employee id list) -----TO BE DELETED---
 Event = id(str), type(string), from(date), to(date), attendees(int)
 		preferences(str), budget(int), name(str), status(str)
 Task = id(str), subject(str), priority(int), sender(employee id), description(str)
 
 Support tables:
 Auth = username(str), password(hashed + salt str), salt(str), user_id(cl, empl str)
-Team = boss(employee id), name(str), members(employee id list)
+Team = boss(employee id), name(str), members(employee id list) -----TO BE DELETED-------
 """
 
 

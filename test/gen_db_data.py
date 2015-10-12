@@ -40,6 +40,9 @@ def gen_employees():
     # Customer service
     a.create_user('employee', 'e1', name='Kayla Bunce', age='28',
                    address='School Street 455', boss='', position='1')
+    # Staff
+    a.create_user('employee', 'e0', name='Peter Pana', age='22',
+                   address='Bro Street 42', boss='', position='0')
 
 def gen_clients():
     a = Authentication()
