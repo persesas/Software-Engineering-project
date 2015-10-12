@@ -26,7 +26,7 @@ class FinancialReq(QtWidgets.QWidget):
         required_amount_label = QtWidgets.QLabel('Required amount :')
         required_amount_edit = QtWidgets.QLineEdit()
         reason_label = QtWidgets.QLabel('Reason :')
-        reason_edit = QtWidgets.QLineEdit()
+        reason_edit = QtWidgets.QTextEdit()
 
 
         # Initialize layouts
@@ -44,6 +44,8 @@ class FinancialReq(QtWidgets.QWidget):
         grid.addWidget(required_amount_edit, 1, 1)
         grid.addWidget(required_amount_label, 2, 0)
         grid.addWidget(required_amount_edit, 2, 1)
+        grid.addWidget(reason_label, 3, 0)
+        grid.addWidget(reason_edit, 3, 1)
 
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.addWidget(title_label)
