@@ -34,6 +34,9 @@ class Mediator():
         self.m = ManagerTabs(self.roles[pos])
         self.base.set_central_widget(self.m)
 
+    def create_client(self, name, age, address, mail, phone):
+        return self.c.create_client(name, age, address, mail, phone)
+
     def get_client(self, col_name='', criteria='', all_data=True):
         return self._get_data('client', col_name, criteria, all_data)
 
