@@ -14,5 +14,5 @@ from view.new_client_req import NewClientReq
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     gen_db()
-    l = NewClientReq()
+    l = LoginForm()
     sys.exit(app.exec_())

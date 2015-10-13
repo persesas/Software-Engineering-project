@@ -48,4 +48,4 @@ class NewClientReq(QtWidgets.QWidget):
     def onSubmit(self):
         from view.mediator import get_mediator
         m = get_mediator()
-        m.create_client(self.name_edit, self.age_edit, self.address_edit, self.mail_edit, self.phone_edit)
+        m.create_client(self.name_edit.text(), self.age_edit.text(), self.address_edit.toPlainText(), self.mail_edit.text(), self.phone_edit.text())
