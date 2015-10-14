@@ -3,8 +3,8 @@ from controller import Controller
 from view.base_template import Base
 from view.tabs import ManagerTabs
 
-class Mediator():
 
+class Mediator():
     base = None
 
     roles = {'0': 'team_member',
@@ -24,7 +24,7 @@ class Mediator():
         return self.c.login(username, password)
 
     def login(self, username):
-        #Get that employee id, clients cant login...
+        # Get that employee id, clients cant login...
         user_id = self.c.get_user_id(username)
         empl_data = self.get_employee('id', user_id, False)[0]
         name = empl_data['name']
@@ -36,6 +36,16 @@ class Mediator():
 
     def create_client(self, name, age, address, mail, phone):
         return self.c.create_client(name, age, address, mail, phone)
+
+    def create_client_req(self,client_id, event_type, description, from_date, to_date, exp_no,
+                          planned_budget, decorations, filming, poster,
+                          food, music, computer, other):
+        return self.c.create_client_req(client_id, event_type, description, from_date, to_date, exp_no,
+                                        planned_budget, decorations, filming, poster,
+                                        food, music, computer, other)
+
+    def create_task(self, sub_teams, event_id, description, staff_name, priority):
+        self.c.create_task(sub_teams, event_id, description, staff_name, priority)
 
     def get_client(self, col_name='', criteria='', all_data=True):
         return self._get_data('client', col_name, criteria, all_data)
@@ -58,4 +68,3 @@ class Mediator():
 
 def get_mediator(_instance=Mediator()):
     return _instance
-
