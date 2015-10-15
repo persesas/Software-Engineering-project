@@ -1,1 +1,3 @@
 *.py[co]
+Data/db.json
+Data/test_db.json
