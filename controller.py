@@ -13,23 +13,14 @@ class Controller():
     def login(self, username, password):
         return self.a.login(username, password)
 
-    def create_client(self, name, age, address, mail, phone):
-        dict = {'name': name, 'age': age, 'address': address, 'mail': mail, 'phone': phone}
-        return self.a.create_user('client', name, **dict)
+    def create_client(self, username, **kwargs):
+        return self.a.create_user('client', username, kwargs)
 
-    def create_client_req(self, client_id, event_type, description, from_date, to_date, exp_no,
-                          planned_budget, decorations, filming, poster,
-                          food, music, computer, other):
-        dict = {'client_id': client_id, 'type': event_type, "description": description, 'from': from_date,
-                'to': to_date, 'expected': exp_no,
-                'budget': planned_budget, 'decorations': decorations, 'filming': filming,
-                'poster': poster, 'food': food, 'music': music, 'computer': computer, 'other': other}
-        self.db.new_event(**dict)
+    def create_client_req(self, **kwargs):
+        self.db.new_event(**kwargs)
 
-    def create_task(self, sub_team, event_id, description, staff_name, priority):
-        dict = {'sub_team': sub_team, 'event_id': event_id, 'description': description, 'staff_name': staff_name,
-                'priority': priority}
-        self.db.new_task(**dict)
+    def create_task(self, **kwargs):
+        self.db.new_task(**kwargs)
 
     def get_user_id(self, username):
         return self.db.get_login_data(username)['user_id']

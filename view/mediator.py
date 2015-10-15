@@ -35,14 +35,14 @@ class Mediator():
         self.base.set_central_widget(self.m)
 
     def create_client(self, name, age, address, mail, phone):
-        return self.c.create_client(name, age, address, mail, phone)
+        return self.c.create_client(name, age=age, address=address, mail=mail, phone=phone)
 
     def create_client_req(self,client_id, event_type, description, from_date, to_date, exp_no,
                           planned_budget, decorations, filming, poster,
                           food, music, computer, other):
-        return self.c.create_client_req(client_id, event_type, description, from_date, to_date, exp_no,
-                                        planned_budget, decorations, filming, poster,
-                                        food, music, computer, other)
+        return self.c.create_client_req(client_id=client_id, event_type=event_type, description=description, from_date=from_date,
+                                        to_date=to_date, exp_no=exp_no, planned_budget=planned_budget, decorations=decorations,
+                                        filming=filming, poster=poster, food=food, music=music, computer=computer, other=other)
 
     def create_task(self, sub_teams, event_id, description, staff_name, priority):
         self.c.create_task(sub_teams, event_id, description, staff_name, priority)

@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
@@ -33,12 +35,23 @@ class ManagerTabs(QtWidgets.QWidget):
 
         self.setLayout(layout)
 
+    def _rearrange(self, table, cols):
+        tbl = []
+        for r in table:
+            d = OrderedDict(r)
+            for c in reversed(cols):
+                d.move_to_end(c)
+            tbl.append(OrderedDict(reversed(list(d.items()))))
+        return tbl
+
     # Create everything...
     def _create_employee_tab(self):
         from view.mediator import get_mediator
         m = get_mediator()
 
-        empl_table = self._create_table(m.get_employee())
+        data = m.get_employee()
+
+        empl_table = self._create_table(self._rearrange(data, ['id', 'name']))
 
         return empl_table
 
@@ -46,7 +59,9 @@ class ManagerTabs(QtWidgets.QWidget):
         from view.mediator import get_mediator
         m = get_mediator()
 
-        client_table = self._create_table(m.get_client())
+        data = m.get_client()
+
+        client_table = self._create_table(self._rearrange(data, ['id', 'name']))
 
         return client_table
 
