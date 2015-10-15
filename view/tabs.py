@@ -10,7 +10,9 @@ class ManagerTabs(QtWidgets.QWidget):
     tasks = 'Tasks'
     cp_panel = 'Control Panel'
     new_client = 'New Client'
-    hire = 'Hire requests'
+    hire = 'Hire Employees'
+    new_event = 'New Event'
+    new_task = 'New Task'
 
     def __init__(self, empl_type):
         super().__init__()
@@ -58,18 +60,18 @@ class ManagerTabs(QtWidgets.QWidget):
 
     # ...and show only the related tabs.
     def _show_team_member(self):
-        from view.event_planning_req import EventPlanningReq
-        epr = EventPlanningReq()
-
-        self.tabs.addTab(epr, self.cp_panel)
 
         self.show()
 
     def _show_customer_service(self):
-        from view.event_planning_req import EventPlanningReq
-        epr = EventPlanningReq()
+        from view.mediator import get_mediator
+        m = get_mediator()
+        ids = {c['id']:c['name'] for c in m.get_client()}
 
-        self.tabs.addTab(epr, self.cp_panel)
+        from view.event_req import ClientReq
+        cr = ClientReq(ids)
+
+        self.tabs.addTab(cr, self.new_event)
 
         self.show()
 
@@ -79,11 +81,11 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
         ids = {c['id']:c['name'] for c in m.get_client()}
 
-        from view.client_req import ClientReq
+        from view.event_req import ClientReq
         cr = ClientReq(ids)
 
-        self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
+        self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(cr, self.new_client)
 
         self.show()
@@ -105,20 +107,37 @@ class ManagerTabs(QtWidgets.QWidget):
         self.show()
 
     def _show_financial(self):
+        from view.recruitment_req import RecruitmentReq
+        r = RecruitmentReq()
+
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
-        #Discounts??
+        self.tabs.addTab(r, self.hire)
 
         self.show()
 
     def _show_production(self):
+        from view.recruitment_req import RecruitmentReq
+        from view.task_req import TaskReq
+        r = RecruitmentReq()
+        t = TaskReq("1", "2", "3")
+
         self.tabs.addTab(self.event_tab, self.events)
+        self.tabs.addTab(t, self.new_task)
+        self.tabs.addTab(r, self.hire)
 
         self.show()
 
     def _show_service(self):
+        from view.recruitment_req import RecruitmentReq
+        from view.task_req import TaskReq
+        r = RecruitmentReq()
+        t = TaskReq("1", "2", "3")
+
         self.tabs.addTab(self.event_tab, self.events)
+        self.tabs.addTab(t, self.new_task)
+        self.tabs.addTab(r, self.hire)
 
         self.show()
 

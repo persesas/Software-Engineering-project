@@ -110,7 +110,7 @@ class Database():
             return self.tables_db['dept'].all()
 
     def new_task(self, **kwargs):
-        # Task = id(str), subject(str), priority(int), sender(employee id), description(str)
+        # Task = id(str), sub_team(str), event_id(int), description(str), staff_name(str), priority(str)
         user_id = 't' + self._gen_id()
         data = {'id': user_id}
         data.update(kwargs)
@@ -125,8 +125,9 @@ class Database():
             return self.tables_db['task'].all()
 
     def new_event(self, **kwargs):
-        # Event = id(str), type(string), from(date), to(date), attendees(int)
-        #         preferences(str), budget(int), name(str), status(str)
+        # Event = id(str), event_type (str), description(str), from_date(date), to_date(date), exp_no(int),
+        #                  planned_budget(int), decorations(str), filming(str), poster(str),
+        #                  food(str), music(str), computer(str), other(str)
         user_id = 'ev' + self._gen_id()
         data = {'id': user_id}
         data.update(kwargs)

@@ -29,7 +29,7 @@ class Controller():
     def create_task(self, sub_team, event_id, description, staff_name, priority):
         dict = {'sub_team': sub_team, 'event_id': event_id, 'description': description, 'staff_name': staff_name,
                 'priority': priority}
-        self.db.new_event(**dict)
+        self.db.new_task(**dict)
 
     def get_user_id(self, username):
         return self.db.get_login_data(username)['user_id']
