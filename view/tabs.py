@@ -17,6 +17,7 @@ class ManagerTabs(QtWidgets.QWidget):
     new_task = 'New Task'
 
     event_popup = None
+    task_popup = None
 
     def __init__(self, empl_type):
         super().__init__()
@@ -113,7 +114,26 @@ class ManagerTabs(QtWidgets.QWidget):
             self.event_popup.setFocus()
 
     def onTaskDoubleClick(self, row, col):
-        print(row, col)
+        if not self.event_popup or not self.event_popup.isVisible():
+            from view.task_req import TaskReq
+            from view.mediator import get_mediator
+            m = get_mediator()
+
+            task_id = self.task_tab.item(row, 0).text()
+            task_data = m.get_task('id', task_id, all_data=False)[0]
+            task_data.update({'id':task_id})
+
+            event_ids = [c['id'] for c in m.get_event()]
+            # ----
+            staff_data = m.get_employee('position', '0')[0]
+            team_members = {'id':staff_data['id'], 'name':staff_data['name']}
+            # ----
+            sub_teams = ['Photography', 'Decoration']
+
+
+            self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data)
+        else:
+            self.task_popup.setFocus()
 
     # ...and show only the related tabs.
     def _show_team_member(self):

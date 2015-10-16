@@ -5,27 +5,29 @@ from view.timed_label import BlinkLabel
 
 
 class TaskReq(QtWidgets.QWidget):
-    def __init__(self, event_ids, staff_names, sub_teams):
+    def __init__(self, event_ids, staff_names, sub_teams, data=None):
         super().__init__()
+
         self.event_ids = event_ids
-        self.staff_names_ids = staff_names
+        self.staff_names = staff_names
         self.sub_teams = sub_teams
+        self.data = data
+
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(500, 200, 850, 420)
-
+        # self.setGeometry(500, 200, 850, 420)
         self.event_id_edit = QtWidgets.QComboBox()
         self.event_id_edit.setEditable(False)
-        # self.event_id_edit.addItems(self.event_ids.keys())
+        self.event_id_edit.addItems(self.event_ids)
 
         self.staff_name_edit = QtWidgets.QComboBox()
         self.staff_name_edit.setEditable(False)
-        # self.staff_name_edit.addItems(self.staff_names.keys())
+        self.staff_name_edit.addItems([self.staff_names['id'] + '-' + self.staff_names['name']])
 
         self.sub_teams_edit = QtWidgets.QComboBox()
         self.sub_teams_edit.setEditable(False)
-        # self.sub_teams_edit.addItems(self.sub_teams.keys())
+        self.sub_teams_edit.addItems(self.sub_teams)
 
         project_ref_label = QtWidgets.QLabel("Event Reference:")
         description_label = QtWidgets.QLabel("Description:")
@@ -61,17 +63,29 @@ class TaskReq(QtWidgets.QWidget):
         main_layout.addWidget(submit)
         main_layout.addLayout(extras_layout)
 
+        if self.data: self._populate()
+
         self.setLayout(main_layout)
         self.show()
 
     def onSubmit(self):
         from view.mediator import get_mediator
         m = get_mediator()
-        m.create_task(self.sub_teams_edit.currentText(), self.event_id_edit.currentText(),
-                      self.description_edit.toPlainText(), self.staff_name_edit.currentText(),
-                      self.priority_edit.currentText())
-        self.clear_form()
-        self.blink_label.start(2000)
+        if not self.data:
+            m.create_task(self.sub_teams_edit.currentText(), self.event_id_edit.currentText(),
+                          self.description_edit.toPlainText(), self.staff_name_edit.currentText(),
+                          self.priority_edit.currentText())
+            self.clear_form()
+            self.blink_label.start(2000)
+        else:
+            m.update_task(self.data['id'], self.sub_teams_edit.currentText(), self.event_id_edit.currentText(),
+                          self.description_edit.toPlainText(), self.staff_name_edit.currentText(),
+                          self.priority_edit.currentText())
+            self.hide()
+
+
+    def _populate(self):
+        self.description_edit.setText(self.data['description'])
 
     def clear_form(self):
         self.sub_teams_edit.clear()
