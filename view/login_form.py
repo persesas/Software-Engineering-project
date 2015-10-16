@@ -52,6 +52,11 @@ class LoginForm(QtWidgets.QWidget):
 
         self.show()
 
+    def showEvent(self, e):
+        self.center()
+
+        e.accept()
+
     def closeEvent(self, e):
         QtWidgets.QApplication.quit()
 
@@ -64,3 +69,9 @@ class LoginForm(QtWidgets.QWidget):
         else:
             m.login(self.userEdit.text())
             self.hide()
+
+    def center(self):
+        appRect = self.frameGeometry()
+        clientArea = QtWidgets.QDesktopWidget().availableGeometry().center()
+        appRect.moveCenter(clientArea)
+        self.move(appRect.topLeft())

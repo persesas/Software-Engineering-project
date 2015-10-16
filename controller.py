@@ -19,20 +19,26 @@ class Controller():
     def create_client_req(self, **kwargs):
         self.db.new_event(**kwargs)
 
+    def update_event(self, **kwargs):
+        self.db.update_event(kwargs)
+
     def create_task(self, **kwargs):
         self.db.new_task(**kwargs)
 
+    def update_task(self, **kwargs):
+        self.db.update_task(kwargs)
+
     def get_user_id(self, username):
         return self.db.get_login_data(username)['user_id']
+
+    def update_client_events(self, cl_id, events):
+        self.db.update_client_events(cl_id, events)
 
     def get_client(self, col_name='', criteria='', all_data=True):
         return self._get_data('client', col_name, criteria, all_data)
 
     def get_employee(self, col_name='', criteria='', all_data=True):
         return self._get_data('employee', col_name, criteria, all_data)
-
-    def get_dept(self, col_name='', criteria='', all_data=True):
-        return self._get_data('dept', col_name, criteria, all_data)
 
     def get_task(self, col_name='', criteria='', all_data=True):
         return self._get_data('task', col_name, criteria, all_data)

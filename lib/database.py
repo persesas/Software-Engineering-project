@@ -61,6 +61,12 @@ class Database():
         # empty data on return(where=blabla) = []
         self.tables_db[tbl_name].insert(data)
 
+    def update(self, tbl_name, update_data, cond_col, cond_val):
+        # update_data = fields to update in a dictionary
+        # Only the event and task will ever need updating
+        # The client too, to change his events
+        self.tables_db[tbl_name].update(update_data, where(cond_col)==cond_val)
+
     # Specific functions
     def new_client(self, **kwargs):
         # Client = id(str), name(str), age(int), address(str), events(event ids)
@@ -76,6 +82,10 @@ class Database():
             return self.tables_db['client'].search(where(col_name) == criteria)
         else:
             return self.tables_db['client'].all()
+
+    def update_client_events(self, cl_id, events):
+        # Events is the updated list of events
+        self.update('client', {'events':events}, 'id', cl_id)
 
     def new_employee(self, **kwargs):
         # Employee = id(str), name(str), age(int), address(str), boss(employee id)
@@ -107,10 +117,16 @@ class Database():
         else:
             return self.tables_db['task'].all()
 
+    def update_task(self, new_data):
+        # Task id is in the new_data
+        # def update(self, tbl_name, update_data, cond_col, cond_val):
+        self.update('task', new_data, 'id', new_data['id'])
+
     def new_event(self, **kwargs):
         # Event = id(str), client_id(str), event_type (str), description(str), from_date(date), to_date(date), exp_no(int),
         #                  planned_budget(int), decorations(str), filming(str), poster(str),
         #                  food(str), music(str), computer(str), other(str)
+        # After creating a new event, we have to add it in the clients' event list
         user_id = 'ev' + self._gen_id()
         data = {'id': user_id, 'seen': False}
         data.update(kwargs)
@@ -123,6 +139,11 @@ class Database():
             return self.tables_db['event'].search(where(col_name) == criteria)
         else:
             return self.tables_db['event'].all()
+
+    def update_event(self, new_data):
+        # Event id is in the new_data
+        # def update(self, tbl_name, update_data, cond_col, cond_val):
+        self.update('event', new_data, 'id', new_data['id'])
 
     def get_login_data(self, username):
         r = self.tables_db['auth'].search(where('username') == username)

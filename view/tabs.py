@@ -16,6 +16,8 @@ class ManagerTabs(QtWidgets.QWidget):
     new_event = 'New Events'
     new_task = 'New Task'
 
+    event_popup = None
+
     def __init__(self, empl_type):
         super().__init__()
 
@@ -29,6 +31,7 @@ class ManagerTabs(QtWidgets.QWidget):
         self.employee_tab = self._create_employee_tab()
         self.client_tab = self._create_client_tab()
         self.event_tab = self._create_event_tab()
+        self.task_tab = self._create_task_tab()
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.tabs)
@@ -69,12 +72,52 @@ class ManagerTabs(QtWidgets.QWidget):
         from view.mediator import get_mediator
         m = get_mediator()
 
-        event_table = self._create_table(m.get_event())
+        data = m.get_event()
+
+        event_table = self._create_table(
+                           self._rearrange(data, ['id', 'client_id', 'from_date', 'to_date', 'seen']))
+        event_table.cellDoubleClicked.connect(self.onEventDoubleClick)
+        # Event contains a lot of information, hide some...
+        for i in range(5, event_table.columnCount()):
+            event_table.setColumnHidden(i, True)
 
         return event_table
 
+    def _create_task_tab(self):
+        from view.mediator import get_mediator
+        m = get_mediator()
+
+        data = m.get_task()
+
+        task_table = self._create_table(self._rearrange(data, ['id', 'priority']))
+        task_table.cellDoubleClicked.connect(self.onTaskDoubleClick)
+
+        return task_table
+
+    def onEventDoubleClick(self, row, col):
+        if not self.event_popup or not self.event_popup.isVisible():
+            from view.event_req import ClientReq
+            from view.mediator import get_mediator
+            m = get_mediator()
+            # get the client id from the table
+            cl_id = self.event_tab.item(row, 1).text()
+            #the event id
+            ev_id = self.event_tab.item(row, 0).text()
+            event_data = m.get_event('id', ev_id, all_data=False)[0]
+            event_data.update({'id':ev_id})
+            # and his/her name
+            name = m.get_client('id', cl_id, all_data=False)[0]['name']
+
+            self.event_popup = ClientReq({cl_id:name}, event_data)
+        else:
+            self.event_popup.setFocus()
+
+    def onTaskDoubleClick(self, row, col):
+        print(row, col)
+
     # ...and show only the related tabs.
     def _show_team_member(self):
+        self.tabs.addTab(self.task_tab, self.tasks)
 
         self.show()
 
@@ -110,7 +153,7 @@ class ManagerTabs(QtWidgets.QWidget):
         r = RecruitmentReq()
 
         self.tabs.addTab(self.employee_tab, self.employees)
-        self.tabs.addTab(r,  self.hire)
+        self.tabs.addTab(r, self.hire)
 
         self.show()
 

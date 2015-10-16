@@ -58,14 +58,18 @@ class Mediator():
     def get_employee(self, col_name='', criteria='', all_data=True):
         return self._get_data('employee', col_name, criteria, all_data)
 
-    def get_dept(self, col_name='', criteria='', all_data=True):
-        return self._get_data('dept', col_name, criteria, all_data)
-
     def get_task(self, col_name='', criteria='', all_data=True):
         return self._get_data('task', col_name, criteria, all_data)
 
     def get_event(self, col_name='', criteria='', all_data=True):
         return self._get_data('event', col_name, criteria, all_data)
+
+    def update_event(self,ev_id, client_id, event_type, description, from_date, to_date, exp_no,
+                          planned_budget, decorations, filming, poster,
+                          food, music, computer, other):
+        return self.c.update_event(id=ev_id, client_id=client_id, event_type=event_type, description=description, from_date=from_date,
+                                   to_date=to_date, exp_no=exp_no, planned_budget=planned_budget, decorations=decorations,
+                                   filming=filming, poster=poster, food=food, music=music, computer=computer, other=other)
 
     def _get_data(self, table, col_name, criteria, all_data):
         return getattr(self.c, "get_%s" % table)(col_name, criteria, all_data)

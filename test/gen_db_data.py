@@ -18,31 +18,31 @@ def gen_employees():
     a = Authentication()
     # Vice presidnent
     a.create_user('employee', 'e8', name='Don Hartley', age='55',
-                   address='Beech Street 365', boss='', position='8')
+                   address='Beech Street 365', position='8')
     # Service
     a.create_user('employee', 'e7', name='Shaw Stonebridge', age='52',
-                   address='Oak Street 582', boss='', position='7')
+                   address='Oak Street 582', position='7')
     # Production
     a.create_user('employee', 'e6', name='Casey Netley', age='49',
-                   address='11th Street 749', boss='', position='6')
+                   address='11th Street 749', position='6')
     # Financial
     a.create_user('employee', 'e5', name='Raven Brown', age='50',
-                   address='Washington avenue 113', boss='', position='5')
+                   address='Washington avenue 113', position='5')
     # Administration
     a.create_user('employee', 'e4', name='Eddy Brady', age='35',
-                   address='East Street 572', boss='', position='4')
+                   address='East Street 572', position='4')
     # Human Resources
     a.create_user('employee', 'e3', name='Neddy Hayley', age='41',
-                   address='Crescentt Street 271', boss='', position='3')
+                   address='Crescentt Street 271', position='3')
     # Senior Customer service oficcer
     a.create_user('employee', 'e2', name='Elaina Kelsey', age='39',
-                   address='Hamilton Street 29', boss='', position='2')
+                   address='Hamilton Street 29', position='2')
     # Customer service
     a.create_user('employee', 'e1', name='Kayla Bunce', age='28',
-                   address='School Street 455', boss='', position='1')
+                   address='School Street 455', position='1')
     # Staff
     a.create_user('employee', 'e0', name='Peter Pana', age='22',
-                   address='Bro Street 42', boss='', position='0')
+                   address='Bro Street 42', position='0')
 
 def gen_clients():
     a = Authentication()

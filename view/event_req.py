@@ -1,22 +1,21 @@
 import datetime
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate
 
 from view.timed_label import BlinkLabel
 
 
 class ClientReq(QtWidgets.QWidget):
-    def __init__(self, client_ids):
+    def __init__(self, client_ids, data=None):
         super().__init__()
 
         self.client_ids = client_ids
+        self.data = data
 
         self.initUI()
 
     def initUI(self):
-        # self.setGeometry(500, 200, 850, 420)
-
         # --- TOP LEFT CORNER ---
         client_rec_no_label = QtWidgets.QLabel('Client record number :')
         self.client_name_edit = QtWidgets.QLabel()
@@ -142,6 +141,8 @@ class ClientReq(QtWidgets.QWidget):
         main_layout.addLayout(extras_layout)
         main_layout.setAlignment(title_label, Qt.AlignHCenter)
 
+        if self.data: self._populate()
+
         self.setLayout(main_layout)
         self.show()
 
@@ -151,14 +152,40 @@ class ClientReq(QtWidgets.QWidget):
     def onSubmit(self):
         from view.mediator import get_mediator
         m = get_mediator()
-        m.create_client_req(self.client_rec_no_edit.currentText() ,self.event_type_edit.text(), self.description_edit.toPlainText(), self.from_date.text(),
-                            self.to_date.text(), self.exp_no_edit.text(),
-                            self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
-                            self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
-                            self.food_edit.toPlainText(), self.music_edit.toPlainText(),
-                            self.computer_edit.toPlainText(), self.other_edit.toPlainText())
-        self.clear_form()
-        self.blink_label.start(2000)
+        if not self.data:
+            m.create_client_req(self.client_rec_no_edit.currentText() ,self.event_type_edit.text(), self.description_edit.toPlainText(), self.from_date.text(),
+                    self.to_date.text(), self.exp_no_edit.text(),
+                    self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
+                    self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
+                    self.food_edit.toPlainText(), self.music_edit.toPlainText(),
+                    self.computer_edit.toPlainText(), self.other_edit.toPlainText())
+
+            self.clear_form()
+            self.blink_label.start(2000)
+        else:
+            m.update_event(self.data['id'], self.client_rec_no_edit.currentText() ,self.event_type_edit.text(), self.description_edit.toPlainText(), self.from_date.text(),
+                    self.to_date.text(), self.exp_no_edit.text(),
+                    self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
+                    self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
+                    self.food_edit.toPlainText(), self.music_edit.toPlainText(),
+                    self.computer_edit.toPlainText(), self.other_edit.toPlainText())
+
+            self.hide()
+
+    def _populate(self):
+        self.event_type_edit.setText(self.data['event_type'])
+        self.description_edit.setText(self.data['description'])
+        self.from_date.setDate(QDate.fromString(self.data['from_date']))
+        self.to_date.setDate(QDate.fromString(self.data['to_date']))
+        self.exp_no_edit.setText(self.data['exp_no'])
+        self.planned_budget_edit.setText(self.data['planned_budget'])
+        self.decorations_edit.setText(self.data['decorations'])
+        self.filming_edit.setText(self.data['filming'])
+        self.poster_edit.setText(self.data['poster'])
+        self.food_edit.setText(self.data['food'])
+        self.music_edit.setText(self.data['music'])
+        self.computer_edit.setText(self.data['computer'])
+        self.other_edit.setText(self.data['other'])
 
     def clear_form(self):
         self.event_type_edit.clear()
