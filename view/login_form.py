@@ -52,6 +52,9 @@ class LoginForm(QtWidgets.QWidget):
 
         self.show()
 
+    def closeEvent(self, e):
+        QtWidgets.QApplication.quit()
+
     def onLogin(self):
         from view.mediator import get_mediator
         m = get_mediator()
@@ -59,5 +62,5 @@ class LoginForm(QtWidgets.QWidget):
         if not m.check_credentials(self.userEdit.text(), self.passwordEdit.text()):
             self.wrong_login.setVisible(True)
         else:
-            self.hide()
             m.login(self.userEdit.text())
+            self.hide()

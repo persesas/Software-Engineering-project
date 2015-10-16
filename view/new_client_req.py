@@ -2,8 +2,10 @@ import datetime
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
+from view.timed_label import BlinkLabel
 
-class NewClientReq(QtWidgets.QWidget):
+
+class NewClient(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -11,7 +13,7 @@ class NewClientReq(QtWidgets.QWidget):
     def initUI(self):
         self.setGeometry(500, 200, 450, 420)
 
-        title_label = QtWidgets.QLabel('New Client request :')
+        title_label = QtWidgets.QLabel('New Client information:')
         name_label = QtWidgets.QLabel('Name :')
         self.name_edit = QtWidgets.QLineEdit()
         age_label = QtWidgets.QLabel('Age :')
@@ -37,11 +39,17 @@ class NewClientReq(QtWidgets.QWidget):
         grid.addWidget(phone_label, 4, 0)
         grid.addWidget(self.phone_edit, 4, 1)
 
+        extras_layout = QtWidgets.QHBoxLayout()
+        self.blink_label = BlinkLabel('Request submitted')
+        extras_layout.addWidget(self.blink_label)
+        extras_layout.setAlignment(self.blink_label, Qt.AlignRight)
+
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.addWidget(title_label)
         main_layout.addLayout(grid)
         main_layout.addWidget(submit_button)
         main_layout.setAlignment(title_label, Qt.AlignHCenter)
+        main_layout.addLayout(extras_layout)
         self.setLayout(main_layout)
         self.show()
 
@@ -51,10 +59,11 @@ class NewClientReq(QtWidgets.QWidget):
         m.create_client(self.name_edit.text(), self.age_edit.text(), self.address_edit.toPlainText(),
                         self.mail_edit.text(), self.phone_edit.text())
         self.clear_form()
+        self.blink_label.start(2000)
 
     def clear_form(self):
-        self.name_edit.setText("")
-        self.age_edit.setText("")
-        self.address_edit.setText("")
-        self.mail_edit.setText("")
-        self.phone_edit.setText("")
+        self.name_edit.clear()
+        self.age_edit.clear()
+        self.address_edit.clear()
+        self.mail_edit.clear()
+        self.phone_edit.clear()

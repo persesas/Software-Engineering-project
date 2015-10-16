@@ -1,11 +1,13 @@
 from controller import Controller
 
 from view.base_template import Base
+from view.login_form import LoginForm
 from view.tabs import ManagerTabs
 
 
 class Mediator():
     base = None
+    login_form = None
 
     roles = {'0': 'team_member',
              '1': 'customer_service',
@@ -34,6 +36,9 @@ class Mediator():
         self.m = ManagerTabs(self.roles[pos])
         self.base.set_central_widget(self.m)
 
+    def logout(self):
+        self.login_form.show()
+
     def create_client(self, name, age, address, mail, phone):
         return self.c.create_client(name, age=age, address=address, mail=mail, phone=phone)
 
@@ -44,8 +49,8 @@ class Mediator():
                                         to_date=to_date, exp_no=exp_no, planned_budget=planned_budget, decorations=decorations,
                                         filming=filming, poster=poster, food=food, music=music, computer=computer, other=other)
 
-    def create_task(self, sub_teams, event_id, description, staff_name, priority):
-        self.c.create_task(sub_teams, event_id, description, staff_name, priority)
+    def create_task(self, sub_team, event_id, description, staff_id, priority):
+        self.c.create_task(sub_team=sub_team, event_id=event_id, description=description, staff_id=staff_id, priority=priority)
 
     def get_client(self, col_name='', criteria='', all_data=True):
         return self._get_data('client', col_name, criteria, all_data)

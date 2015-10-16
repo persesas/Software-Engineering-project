@@ -13,21 +13,19 @@ Main tables:
 Client = id(str), name(str), age(int), address(str), email(str), phone(str),
 		 events(event ids)
 Employee = id(str), name(str), age(int), address(str), boss(employee id), position(str)
-Department = id(str), leader(str), name(str), members(employee id list) -----TO BE DELETED---
 Event = id(str), type(string), from(date), to(date), attendees(int)
 		preferences(str), budget(int), name(str), status(str)
 Task = id(str), subject(str), priority(int), sender(employee id), description(str)
 
 Support tables:
 Auth = username(str), password(hashed + salt str), salt(str), user_id(cl, empl str)
-Team = boss(employee id), name(str), members(employee id list) -----TO BE DELETED-------
 """
 
 
 class Database():
     """Docstring for database manager"""
 
-    tables = ['client', 'event', 'employee', 'team', 'department', 'task', 'auth']
+    tables = ['client', 'event', 'employee', 'task', 'auth']
 
     def __init__(self, name='db.json', purge=False):
         # test initial number of tables
@@ -94,23 +92,8 @@ class Database():
         else:
             return self.tables_db['employee'].all()
 
-    def new_dept(self, **kwargs):
-        # Department = id(str), leader(str), name(str), members(employee id list)
-        user_id = 'dt' + self._gen_id()
-        data = {'id': user_id}
-        data.update(kwargs)
-        self.insert('dept', data)
-
-        return user_id
-
-    def get_dept(self, col_name, criteria, all_data=False):
-        if not all_data:
-            return self.tables_db['dept'].search(where(col_name) == criteria)
-        else:
-            return self.tables_db['dept'].all()
-
     def new_task(self, **kwargs):
-        # Task = id(str), sub_team(str), event_id(int), description(str), staff_name(str), priority(str)
+        # Task = id(str), sub_team(str), event_id(int), description(str), staff_id(str), priority(str)
         user_id = 't' + self._gen_id()
         data = {'id': user_id, 'seen': False}
         data.update(kwargs)

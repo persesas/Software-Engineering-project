@@ -13,7 +13,7 @@ class ManagerTabs(QtWidgets.QWidget):
     cp_panel = 'Control Panel'
     new_client = 'New Client'
     hire = 'Hire Employees'
-    new_event = 'New Event'
+    new_event = 'New Events'
     new_task = 'New Task'
 
     def __init__(self, empl_type):
@@ -96,12 +96,12 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
         ids = {c['id']:c['name'] for c in m.get_client()}
 
-        from view.event_req import ClientReq
-        cr = ClientReq(ids)
+        from view.new_client_req import NewClient
+        nc = NewClient()
 
         self.tabs.addTab(self.event_tab, self.events)
         self.tabs.addTab(self.client_tab, self.clients)
-        self.tabs.addTab(cr, self.new_client)
+        self.tabs.addTab(nc, self.new_client)
 
         self.show()
 

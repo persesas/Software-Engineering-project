@@ -14,7 +14,9 @@ from view.task_req import TaskReq
 # from view.new_client_req import NewClientReq
 
 if __name__ == '__main__':
+    from view.mediator import get_mediator
+    m = get_mediator()
     app = QApplication(sys.argv)
     gen_db()
-    l = LoginForm()
+    m.login_form = LoginForm()
     sys.exit(app.exec_())

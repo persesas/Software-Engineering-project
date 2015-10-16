@@ -19,18 +19,26 @@ class Base(QtWidgets.QWidget):
         dpt_label = QtWidgets.QLabel(self.department)
         user_label = QtWidgets.QLabel('Logged in as: {}'.format(self.username))
 
+        logout_btn = QtWidgets.QPushButton('Logout')
+        logout_btn.clicked.connect(self.onLogout)
+
         # Initialize top layout
         top_layout = QtWidgets.QHBoxLayout()
         top_layout.addWidget(dpt_label)
         top_layout.addStretch(1)
         top_layout.addWidget(user_label)
+        top_layout.addWidget(logout_btn)
 
         # Initialize main layout
         self.main_layout = QtWidgets.QVBoxLayout()
         self.main_layout.addWidget(menu_bar)
         self.main_layout.addLayout(top_layout)
         self.setLayout(self.main_layout)
+        self.center()
         self.show()
+
+    def closeEvent(self, e):
+        QtWidgets.QApplication.quit()
 
     def _create_menu_bar(self):
         # The empty bar
@@ -47,6 +55,19 @@ class Base(QtWidgets.QWidget):
 
         return menu_bar
 
+    def onLogout(self):
+        from view.mediator import get_mediator
+        m = get_mediator()
+        m.logout()
+
+        self.destroy()
+
     def set_central_widget(self, widget):
         self.main_layout.addWidget(widget)
         self.update()
+
+    def center(self):
+        appRect = self.frameGeometry()
+        clientArea = QtWidgets.QDesktopWidget().availableGeometry().center()
+        appRect.moveCenter(clientArea)
+        self.move(appRect.topLeft())

@@ -1,4 +1,7 @@
+from PyQt5.QtCore import Qt
 from PyQt5 import QtWidgets
+
+from view.timed_label import BlinkLabel
 
 
 class TaskReq(QtWidgets.QWidget):
@@ -24,7 +27,7 @@ class TaskReq(QtWidgets.QWidget):
         self.sub_teams_edit.setEditable(False)
         # self.sub_teams_edit.addItems(self.sub_teams.keys())
 
-        project_ref_label = QtWidgets.QLabel("Project Reference:")
+        project_ref_label = QtWidgets.QLabel("Event Reference:")
         description_label = QtWidgets.QLabel("Description:")
         self.description_edit = QtWidgets.QTextEdit()
         assign_to_label = QtWidgets.QLabel("Assign to:")
@@ -34,8 +37,8 @@ class TaskReq(QtWidgets.QWidget):
         self.priority_edit.addItem("High")
         self.priority_edit.addItem("Medium")
         self.priority_edit.addItem("Low")
-        send_task = QtWidgets.QPushButton("Send Task")
-        send_task.clicked.connect(self.onSubmit)
+        submit = QtWidgets.QPushButton("Send Task")
+        submit.clicked.connect(self.onSubmit)
 
         grid = QtWidgets.QGridLayout()
         grid.addWidget(project_ref_label, 0, 0)
@@ -47,10 +50,17 @@ class TaskReq(QtWidgets.QWidget):
         grid.addWidget(priority_label, 3, 0)
         grid.addWidget(self.priority_edit, 3, 1)
 
+        extras_layout = QtWidgets.QHBoxLayout()
+        self.blink_label = BlinkLabel('Task submitted')
+        extras_layout.addWidget(self.blink_label)
+        extras_layout.setAlignment(self.blink_label, Qt.AlignRight)
+
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.addWidget(self.sub_teams_edit)
         main_layout.addLayout(grid)
-        main_layout.addWidget(send_task)
+        main_layout.addWidget(submit)
+        main_layout.addLayout(extras_layout)
+
         self.setLayout(main_layout)
         self.show()
 
@@ -60,3 +70,12 @@ class TaskReq(QtWidgets.QWidget):
         m.create_task(self.sub_teams_edit.currentText(), self.event_id_edit.currentText(),
                       self.description_edit.toPlainText(), self.staff_name_edit.currentText(),
                       self.priority_edit.currentText())
+        self.clear_form()
+        self.blink_label.start(2000)
+
+    def clear_form(self):
+        self.sub_teams_edit.clear()
+        self.event_id_edit.clear()
+        self.description_edit.clear()
+        self.staff_name_edit.clear()
+        self.priority_edit.clear()

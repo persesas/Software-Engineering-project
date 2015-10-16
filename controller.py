@@ -14,7 +14,7 @@ class Controller():
         return self.a.login(username, password)
 
     def create_client(self, username, **kwargs):
-        return self.a.create_user('client', username, kwargs)
+        return self.a.create_user('client', username, **kwargs)
 
     def create_client_req(self, **kwargs):
         self.db.new_event(**kwargs)

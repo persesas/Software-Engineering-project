@@ -1,6 +1,9 @@
 import datetime
+
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
+
+from view.timed_label import BlinkLabel
 
 
 class ClientReq(QtWidgets.QWidget):
@@ -98,6 +101,7 @@ class ClientReq(QtWidgets.QWidget):
 
         computer_group = QtWidgets.QGroupBox("Computer-Related Issues")
         computer_layout = QtWidgets.QHBoxLayout()
+
         self.computer_edit = QtWidgets.QTextEdit()
         computer_layout.addWidget(self.computer_edit)
         computer_group.setLayout(computer_layout)
@@ -124,11 +128,18 @@ class ClientReq(QtWidgets.QWidget):
         title_label = QtWidgets.QLabel("Client Request Details")
         submit_button = QtWidgets.QPushButton("Submit")
         submit_button.clicked.connect(self.onSubmit)
+
+        extras_layout = QtWidgets.QHBoxLayout()
+        self.blink_label = BlinkLabel('Request submitted')
+        extras_layout.addWidget(self.blink_label)
+        extras_layout.setAlignment(self.blink_label, Qt.AlignRight)
+
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.addWidget(title_label)
         main_layout.addLayout(center_layout)
         main_layout.addLayout(bottom_layout)
         main_layout.addWidget(submit_button)
+        main_layout.addLayout(extras_layout)
         main_layout.setAlignment(title_label, Qt.AlignHCenter)
 
         self.setLayout(main_layout)
@@ -146,3 +157,20 @@ class ClientReq(QtWidgets.QWidget):
                             self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
                             self.food_edit.toPlainText(), self.music_edit.toPlainText(),
                             self.computer_edit.toPlainText(), self.other_edit.toPlainText())
+        self.clear_form()
+        self.blink_label.start(2000)
+
+    def clear_form(self):
+        self.event_type_edit.clear()
+        self.description_edit.clear()
+        self.from_date.clear()
+        self.to_date.clear()
+        self.exp_no_edit.clear()
+        self.planned_budget_edit.clear()
+        self.decorations_edit.clear()
+        self.filming_edit.clear()
+        self.poster_edit.clear()
+        self.food_edit.clear()
+        self.music_edit.clear()
+        self.computer_edit.clear()
+        self.other_edit.clear()

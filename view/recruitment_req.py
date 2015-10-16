@@ -2,6 +2,8 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
+from view.timed_label import BlinkLabel
+
 
 class RecruitmentReq(QtWidgets.QWidget):
     def __init__(self):
@@ -30,6 +32,7 @@ class RecruitmentReq(QtWidgets.QWidget):
         financial_button = QtWidgets.QRadioButton('Financial')
 
         submit_button = QtWidgets.QPushButton("Submit")
+        submit_button.clicked.connect(self.onSubmit)
 
         #Initialize layouts
         grid_layout_dpt = QtWidgets.QGridLayout()
@@ -56,6 +59,11 @@ class RecruitmentReq(QtWidgets.QWidget):
         dpt_button_group = QtWidgets.QGroupBox("Requesting department :")
         dpt_button_group.setLayout(grid_layout_dpt)
 
+        extras_layout = QtWidgets.QHBoxLayout()
+        self.blink_label = BlinkLabel('Request submitted')
+        extras_layout.addWidget(self.blink_label)
+        extras_layout.setAlignment(self.blink_label, Qt.AlignRight)
+
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.addWidget(title_label)
         main_layout.setAlignment(title_label, Qt.AlignHCenter)
@@ -63,5 +71,9 @@ class RecruitmentReq(QtWidgets.QWidget):
         main_layout.addLayout(grid_layout)
         main_layout.addWidget(dpt_button_group)
         main_layout.addWidget(submit_button)
+        main_layout.addLayout(extras_layout)
         self.setLayout(main_layout)
         self.show()
+
+    def onSubmit(self):
+        self.blink_label.start(2000)
