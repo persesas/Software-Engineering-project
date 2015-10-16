@@ -6,8 +6,8 @@ from lib.database import Database
 
 
 class Authentication():
-    def __init__(self):
-        self.db = Database()
+    def __init__(self, db_name='db.json'):
+        self.db = Database(name=db_name)
 
     def _gen_salt(self, length=6, chars=string.ascii_letters):
         return ''.join([random.choice(chars) for _ in range(length)])
@@ -22,7 +22,7 @@ class Authentication():
         elif kind == 'employee':
             user_id = self.db.new_employee(**kwargs)
         else:
-            raise Exception()
+            raise Exception('Invalid user.')
 
         # Create new user in the database
         salt = self._gen_salt()

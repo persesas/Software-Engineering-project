@@ -8,7 +8,7 @@ from lib.database import Database
 
 #test hashed password
 
-class TestDatabase(unittest.TestCase):
+class ControllerTest(unittest.TestCase):
 
     test_db = 'test_db.json'
 

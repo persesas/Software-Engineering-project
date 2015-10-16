@@ -59,6 +59,10 @@ class Mediator():
         self.c.create_task(sub_team=sub_team, event_id=event_id, description=description, staff_id=staff_id,
                            priority=priority)
 
+    def update_task(self, task_id, sub_team, event_id, description, staff_id, priority):
+        self.c.update_task(id=task_id, sub_team=sub_team, event_id=event_id, description=description,
+                           staff_id=staff_id, priority=priority)
+
     def get_client(self, col_name='', criteria='', all_data=True):
         return self._get_data('client', col_name, criteria, all_data)
 
