@@ -149,12 +149,11 @@ class ManagerTabs(QtWidgets.QWidget):
         self.show()
 
     def _show_human_resources(self):
-        from view.recruitment_req import RecruitmentReq
-        r = RecruitmentReq()
+        from view.new_employee import NewEmployee
+        e = NewEmployee()
 
         self.tabs.addTab(self.employee_tab, self.employees)
-        self.tabs.addTab(r, self.hire)
-
+        self.tabs.addTab(e, self.hire)
         self.show()
 
     def _show_administration(self):

@@ -40,17 +40,24 @@ class Mediator():
         self.login_form.show()
 
     def create_client(self, name, age, address, mail, phone):
-        return self.c.create_client(name, age=age, address=address, mail=mail, phone=phone)
+        return self.c.create_client(name, name=name, age=age, address=address, mail=mail, phone=phone)
 
-    def create_client_req(self,client_id, event_type, description, from_date, to_date, exp_no,
+    def create_client_req(self, client_id, event_type, description, from_date, to_date, exp_no,
                           planned_budget, decorations, filming, poster,
                           food, music, computer, other):
-        return self.c.create_client_req(client_id=client_id, event_type=event_type, description=description, from_date=from_date,
-                                        to_date=to_date, exp_no=exp_no, planned_budget=planned_budget, decorations=decorations,
-                                        filming=filming, poster=poster, food=food, music=music, computer=computer, other=other)
+        return self.c.create_client_req(client_id=client_id, event_type=event_type, description=description,
+                                        from_date=from_date,
+                                        to_date=to_date, exp_no=exp_no, planned_budget=planned_budget,
+                                        decorations=decorations,
+                                        filming=filming, poster=poster, food=food, music=music, computer=computer,
+                                        other=other)
+
+    def create_employee(self, name, age, address, mail, phone):
+        return self.c.create_employee(name, name=name, age=age, address=address, mail=mail, phone=phone)
 
     def create_task(self, sub_team, event_id, description, staff_id, priority):
-        self.c.create_task(sub_team=sub_team, event_id=event_id, description=description, staff_id=staff_id, priority=priority)
+        self.c.create_task(sub_team=sub_team, event_id=event_id, description=description, staff_id=staff_id,
+                           priority=priority)
 
     def get_client(self, col_name='', criteria='', all_data=True):
         return self._get_data('client', col_name, criteria, all_data)
@@ -64,12 +71,15 @@ class Mediator():
     def get_event(self, col_name='', criteria='', all_data=True):
         return self._get_data('event', col_name, criteria, all_data)
 
-    def update_event(self,ev_id, client_id, event_type, description, from_date, to_date, exp_no,
-                          planned_budget, decorations, filming, poster,
-                          food, music, computer, other):
-        return self.c.update_event(id=ev_id, client_id=client_id, event_type=event_type, description=description, from_date=from_date,
-                                   to_date=to_date, exp_no=exp_no, planned_budget=planned_budget, decorations=decorations,
-                                   filming=filming, poster=poster, food=food, music=music, computer=computer, other=other)
+    def update_event(self, ev_id, client_id, event_type, description, from_date, to_date, exp_no,
+                     planned_budget, decorations, filming, poster,
+                     food, music, computer, other):
+        return self.c.update_event(id=ev_id, client_id=client_id, event_type=event_type, description=description,
+                                   from_date=from_date,
+                                   to_date=to_date, exp_no=exp_no, planned_budget=planned_budget,
+                                   decorations=decorations,
+                                   filming=filming, poster=poster, food=food, music=music, computer=computer,
+                                   other=other)
 
     def _get_data(self, table, col_name, criteria, all_data):
         return getattr(self.c, "get_%s" % table)(col_name, criteria, all_data)
