@@ -32,7 +32,7 @@ class Mediator():
         name = empl_data['name']
         pos = empl_data['position']
 
-        self.base = Base(name, self.roles[pos].title().replace('_', ' '))
+        self.base = Base(name, self.roles[pos].title().replace('_', ' '), username)
         self.m = ManagerTabs(self.roles[pos])
         self.base.set_central_widget(self.m)
 

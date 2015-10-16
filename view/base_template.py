@@ -2,11 +2,12 @@ from PyQt5 import QtWidgets
 
 
 class Base(QtWidgets.QWidget):
-    def __init__(self, username, department):
+    def __init__(self, name, department, username):
         super().__init__()
 
-        self.username = username
+        self.name = name
         self.department = department
+        self.username = username
 
         self.initUI()
 
@@ -17,16 +18,20 @@ class Base(QtWidgets.QWidget):
         menu_bar = self._create_menu_bar()
 
         dpt_label = QtWidgets.QLabel(self.department)
-        user_label = QtWidgets.QLabel('Logged in as: {}'.format(self.username))
+        user_label = QtWidgets.QLabel('Logged in as: {}'.format(self.name))
 
         logout_btn = QtWidgets.QPushButton('Logout')
         logout_btn.clicked.connect(self.onLogout)
+
+        refresh_btn = QtWidgets.QPushButton('Refresh')
+        refresh_btn.clicked.connect(self.onRefresh)
 
         # Initialize top layout
         top_layout = QtWidgets.QHBoxLayout()
         top_layout.addWidget(dpt_label)
         top_layout.addStretch(1)
         top_layout.addWidget(user_label)
+        top_layout.addWidget(refresh_btn)
         top_layout.addWidget(logout_btn)
 
         # Initialize main layout
@@ -59,6 +64,13 @@ class Base(QtWidgets.QWidget):
         from view.mediator import get_mediator
         m = get_mediator()
         m.logout()
+
+        self.destroy()
+
+    def onRefresh(self):
+        from view.mediator import get_mediator
+        m = get_mediator()
+        m.login(self.username)
 
         self.destroy()
 

@@ -20,6 +20,7 @@ class ManagerTabs(QtWidgets.QWidget):
 
     def __init__(self, empl_type):
         super().__init__()
+        self.empy_type = empl_type
 
         self.initUI()
         getattr(self, '_show_{}'.format(empl_type))()
@@ -27,16 +28,18 @@ class ManagerTabs(QtWidgets.QWidget):
     def initUI(self):
         # Initialize tab widgets
         self.tabs = QtWidgets.QTabWidget()
-
         self.employee_tab = self._create_employee_tab()
         self.client_tab = self._create_client_tab()
         self.event_tab = self._create_event_tab()
         self.task_tab = self._create_task_tab()
 
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.tabs)
+        self.layout = QtWidgets.QVBoxLayout()
+        self.layout.addWidget(self.tabs)
 
-        self.setLayout(layout)
+        self.setLayout(self.layout)
+
+
+
 
     def _rearrange(self, table, cols):
         tbl = []
@@ -154,6 +157,7 @@ class ManagerTabs(QtWidgets.QWidget):
 
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(e, self.hire)
+
         self.show()
 
     def _show_administration(self):
