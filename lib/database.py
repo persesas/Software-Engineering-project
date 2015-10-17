@@ -69,7 +69,8 @@ class Database():
 
     # Specific functions
     def new_client(self, **kwargs):
-        # Client = id(str), name(str), age(int), address(str), events(event ids)
+        # Client = id(str), name(str), age(int), address(str), email(str),
+        #          phone(str), events(event ids)
         user_id = 'cl' + self._gen_id()
         data = {'id': user_id}
         data.update(kwargs)
@@ -103,7 +104,7 @@ class Database():
             return self.tables_db['employee'].all()
 
     def new_task(self, **kwargs):
-        # Task = id(str), sub_team(str), event_id(int), description(str), staff_id(str), priority(str)
+        # Task = id(str), subject(str), priority(int), sender(employee id), description(str)
         user_id = 't' + self._gen_id()
         data = {'id': user_id, 'seen': False}
         data.update(kwargs)

@@ -8,7 +8,7 @@ from lib.database import Database
 
 #test hashed password
 
-class TestDatabase(unittest.TestCase):
+class ControllerTest(unittest.TestCase):
 
     test_db = 'test_db.json'
 
@@ -22,30 +22,96 @@ class TestDatabase(unittest.TestCase):
 
     def test_db_purge(self):
         db = Database(name=self.test_db, purge=True)
+
         self.assertEqual(len(db.tables), 5)
 
     def test_new_user(self):
-        db = Database(name=self.test_db)
-        db.new_user('randomuser1', '12345', '12345')
-        r = db.get_login_data('randomuser1')
-        self.assertEqual('randomuser1', r['username'])
+        db = Database(name=self.test_db, purge=True)
+        db.new_user('user1', '12345', '12345', 'cl12345')
+
+        r = db.get_login_data('user1')
+        self.assertEqual('user1', r['username'])
         self.assertEqual('12345', r['password'])
         self.assertEqual('12345', r['salt'])
-        self.assertIn('user_id', r)
+        self.assertIn('cl12345', r['user_id'])
 
     def test_unique_user(self):
-        db = Database(name=self.test_db)
-        db.new_user('randomuser2', '12345', '12345')
+        db = Database(name=self.test_db, purge=True)
+        db.new_user('user2', '12345', '12345', 'cl12345')
 
         with self.assertRaises(KeyError):
-            db.new_user('randomuser2', '12345', '12345')
+            db.new_user('user2', '12345', '12345', 'cl12345')
 
     def test_no_user(self):
-        db = Database(name=self.test_db)
+        db = Database(name=self.test_db, purge=True)
+
         self.assertFalse(db.get_login_data('randomuser3'))
 
-    def test_(self):
-        db = Database(name=self.test_db)
+    def test_new_client(self):
+        db = Database(name=self.test_db, purge=True)
+
+        cl_id = db.new_client(name='Foo Bar', age='23')
+        cl_data = db.get_client('id', cl_id)[0]
+
+        self.assertEqual('Foo Bar', cl_data['name'])
+        self.assertEqual('23', cl_data['age'])
+
+    def test_update_client_events(self):
+        db = Database(name=self.test_db, purge=True)
+
+        cl_id = db.new_client(name='Foo Bar', events=['ev12345'])
+        db.update_client_events(cl_id, [])
+        cl_data = db.get_client('id', cl_id)[0]
+
+        self.assertFalse(cl_data['events'])
+
+    def test_new_employee(self):
+        db = Database(name=self.test_db, purge=True)
+
+        em_id = db.new_employee(name='Foo Bar', age='23', pos='3')
+        em_data = db.get_employee('id', em_id)[0]
+
+        self.assertEqual('Foo Bar', em_data['name'])
+        self.assertEqual('23', em_data['age'])
+        self.assertEqual('3', em_data['pos'])
+
+    def test_new_task(self):
+        db = Database(name=self.test_db, purge=True)
+
+        task_id = db.new_task(subject='Underwater photos', priority='Medium')
+        task_data = db.get_task('id', task_id)[0]
+
+        self.assertEqual('Underwater photos', task_data['subject'])
+        self.assertEqual('Medium', task_data['priority'])
+
+    def test_update_task(self):
+        db = Database(name=self.test_db, purge=True)
+
+        task_id = db.new_task(subject='Underwater photos', priority='Medium')
+        db.update_task({'id':task_id, 'subject':'Aerial dancing', 'priority':'High'})
+        task_data = db.get_task('id', task_id)[0]
+
+        self.assertEqual('Aerial dancing', task_data['subject'])
+        self.assertEqual('High', task_data['priority'])
+
+    def test_new_event(self):
+        db = Database(name=self.test_db, purge=True)
+
+        event_id = db.new_event(event_type='Unicorn exhibition', from_date='09-12-2015')
+        event_data = db.get_event('id', event_id)[0]
+
+        self.assertEqual('Unicorn exhibition', event_data['event_type'])
+        self.assertEqual('09-12-2015', event_data['from_date'])
+
+    def test_update_event(self):
+        db = Database(name=self.test_db, purge=True)
+
+        event_id = db.new_event(event_type='Mohawk fans', from_date='09-12-2042')
+        db.update_event({'id':event_id, 'from_date':'08-12-2015'})
+        event_data = db.get_event('id', event_id)[0]
+
+        self.assertEqual('Mohawk fans', event_data['event_type'])
+        self.assertEqual('08-12-2015', event_data['from_date'])
 
 
 if __name__ == '__main__':

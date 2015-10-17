@@ -5,6 +5,8 @@ if ".." not in sys.path:
 import unittest
 
 from lib.database import Database
+from lib.auth import Authentication
+from controller import Controller
 
 #test hashed password
 
@@ -20,34 +22,91 @@ class ControllerTest(unittest.TestCase):
         #Change it
         Database(name=self.test_db, purge=True)
 
-    def test_01_db_purge(self):
-        db = Database(name=self.test_db, purge=True)
-        self.assertEqual(len(db.tables), 7)
+    def test_login(self):
+        a = Authentication(self.test_db)
+        c = Controller(self.test_db)
 
-    def test_02_new_user(self):
-        db = Database(name=self.test_db)
-        db.new_user('randomuser1', '12345', '12345')
-        r = db.get_login_data('randomuser1')
-        self.assertIn('username', r)
-        self.assertIn('password', r)
-        self.assertIn('salt', r)
+        a.create_user('employee', 'user1')
 
-    def test_03_unique_user(self):
-        db = Database(name=self.test_db)
-        db.new_user('randomuser2', '12345', '12345')
+        self.assertTrue(c.login('user1', '12345'))
 
-        with self.assertRaises(KeyError):
-            db.new_user('randomuser2', '12345', '12345')
+    def test_create_client(self):
+        c = Controller(self.test_db)
 
-    def test_04_no_user(self):
-        db = Database(name=self.test_db)
-        self.assertFalse(db.get_login_data('randomuser3'))
+        cl_id = c.create_client('cl12345', name='Foo Bar', age='23')
+        cl_data = c.get_client('id', cl_id)[0]
 
-    def test_05_delete_user(self):
-        db = Database(name=self.test_db)
-        db.new_user('randomuser4', '12345', '12345')
-        db.delete_user('randomuser4')
-        self.assertFalse(db.get_login_data('randomuser4'))
+        self.assertEqual('Foo Bar', cl_data['name'])
+        self.assertEqual('23', cl_data['age'])
+
+    def test_create_employee(self):
+        c = Controller(self.test_db)
+
+        em_id = c.create_employee('em12345', name='Foo Bar', age='23', pos='3')
+        em_data = c.get_employee('id', em_id)[0]
+
+        self.assertEqual('Foo Bar', em_data['name'])
+        self.assertEqual('23', em_data['age'])
+        self.assertEqual('3', em_data['pos'])
+
+    def test_update_event(self):
+        c = Controller(self.test_db)
+
+        event_id = c.create_client_req(event_type='Mohawk fans', from_date='09-12-2042')
+        updated_event = {'id':event_id, 'from_date':'08-12-2015'}
+        c.update_event(**updated_event)
+        event_data = c.get_event('id', event_id)[0]
+
+        self.assertEqual('Mohawk fans', event_data['event_type'])
+        self.assertEqual('08-12-2015', event_data['from_date'])
+
+    def test_create_client_request(self):
+        c = Controller(self.test_db)
+
+        event_id = c.create_client_req(event_type='Unicorn exhibition', from_date='09-12-2015')
+        event_data = c.get_event('id', event_id)[0]
+
+        self.assertEqual('Unicorn exhibition', event_data['event_type'])
+        self.assertEqual('09-12-2015', event_data['from_date'])
+
+    def test_update_client_events(self):
+        c = Controller(self.test_db)
+
+        cl_id = c.create_client('cl12345', name='Foo Bar', events=['ev12345'])
+        c.update_client_events(cl_id, [])
+        cl_data = c.get_client('id', cl_id)[0]
+
+        self.assertFalse(cl_data['events'])
+
+        self.assertEqual([], cl_data['events'])
+
+    def test_create_task(self):
+        c = Controller(self.test_db)
+
+        task_id = c.create_task(subject='Underwater photos', priority='Medium')
+        task_data = c.get_task('id', task_id)[0]
+
+        self.assertEqual('Underwater photos', task_data['subject'])
+        self.assertEqual('Medium', task_data['priority'])
+
+    def test_update_task(self):
+        c = Controller(self.test_db)
+
+        task_id = c.create_task(subject='Underwater photos', priority='Medium')
+        updated_task = {'id':task_id, 'subject':'Aerial dancing', 'priority':'High'}
+        c.update_task(**updated_task)
+        task_data = c.get_task('id', task_id)[0]
+
+        self.assertEqual('Aerial dancing', task_data['subject'])
+        self.assertEqual('High', task_data['priority'])
+
+    def test_get_user_id(self):
+        c = Controller(self.test_db)
+
+        cl_id = c.create_client('user1')
+        cl_data = c.get_client('id', cl_id)[0]
+
+        self.assertEqual(cl_id, cl_data['id'])
 
 if __name__ == '__main__':
     unittest.main()

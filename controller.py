@@ -6,9 +6,9 @@ from lib.auth import Authentication
 
 
 class Controller():
-    def __init__(self):
-        self.db = Database()
-        self.a = Authentication()
+    def __init__(self, db_name='db.json'):
+        self.db = Database(name=db_name)
+        self.a = Authentication(db_name=db_name)
 
     def login(self, username, password):
         return self.a.login(username, password)
@@ -17,7 +17,7 @@ class Controller():
         return self.a.create_user('client', username, **kwargs)
 
     def create_client_req(self, **kwargs):
-        self.db.new_event(**kwargs)
+        return self.db.new_event(**kwargs)
 
     def create_employee(self, username, **kwargs):
         return self.a.create_user('employee', username, **kwargs)
@@ -26,7 +26,7 @@ class Controller():
         self.db.update_event(kwargs)
 
     def create_task(self, **kwargs):
-        self.db.new_task(**kwargs)
+        return self.db.new_task(**kwargs)
 
     def update_task(self, **kwargs):
         self.db.update_task(kwargs)

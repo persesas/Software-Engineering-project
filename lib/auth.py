@@ -33,11 +33,12 @@ class Authentication():
 
         self.db.new_user(username, m.hexdigest(), salt, user_id)
 
+        return user_id
+
     # Client needs to know the password
 
     def login(self, username, password):
         # retrieve the data from db
-        # test: no such user, wrong/correct login
         info = self.db.get_login_data(username)
         if not info:
             # wrong username

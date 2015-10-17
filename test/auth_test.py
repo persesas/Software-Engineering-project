@@ -14,56 +14,46 @@ class AuthTest(unittest.TestCase):
     test_db = 'test_db.json'
 
     def setUp(self):
-        #Change it
         Database(name=self.test_db, purge=True)
 
     def tearDown(self):
-        #Change it
         Database(name=self.test_db, purge=True)
 
     def test_create_user(self):
-        Database(name=self.test_db, purge=True)
         a = Authentication(self.test_db)
 
-
+        self.assertTrue(a.create_user('client', 'user1'))
 
     def test_username_exists(self):
-        Database(name=self.test_db, purge=True)
         a = Authentication(self.test_db)
+
+        a.create_user('employee', 'user2')
+        with self.assertRaises(KeyError):
+            a.create_user('employee', 'user2')
 
     def test_no_such_kind(self):
-        Database(name=self.test_db, purge=True)
         a = Authentication(self.test_db)
+
+        with self.assertRaises(Exception):
+            a.create_user('invalid', 'user3')
 
     def test_success_login(self):
-        Database(name=self.test_db)
         a = Authentication(self.test_db)
 
-        db.new_user('randomuser1', '12345', '12345')
-        r = db.get_login_data('randomuser1')
-        self.assertIn('username', r)
-        self.assertIn('password', r)
-        self.assertIn('salt', r)
-
-    def test_invalid_login(self):
-        Database(name=self.test_db)
-        a = Authentication(self.test_db)
-
-        with self.assertRaises(KeyError):
-            db.new_user('randomuser2', '12345', '12345')
+        a.create_user('employee', 'user4')
+        self.assertTrue(a.login('user4', '12345'))
 
     def test_wrong_username_login(self):
-        Database(name=self.test_db)
         a = Authentication(self.test_db)
 
-        self.assertFalse(db.get_login_data('randomuser3'))
+        a.create_user('employee', 'user5')
+        self.assertFalse(a.login('userWrong', '12345'))
 
     def test_wrong_password_login(self):
-        Database(name=self.test_db)
         a = Authentication(self.test_db)
 
-        db.new_user('randomuser4', '12345', '12345')
-        self.assertFalse(db.get_login_data('randomuser4'))
+        a.create_user('employee', 'user6')
+        self.assertFalse(a.login('user6', '1'))
 
 if __name__ == '__main__':
     unittest.main()
