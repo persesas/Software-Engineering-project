@@ -52,13 +52,13 @@ class ControllerTest(unittest.TestCase):
     def test_update_event(self):
         c = Controller(self.test_db)
 
-        event_id = c.create_client_req(event_type='Mohawk fans', from_date='09-12-2042', client_id='42')
+        event_id = c.create_client_req(event_type='Mohawk fans', from_date='09-12-2042', client_id='cl973913')
         updated_event = {'id':event_id, 'from_date':'08-12-2015'}
         c.update_event(**updated_event)
         event_data = c.get_event('id', event_id)[0]
 
         self.assertEqual('Mohawk fans', event_data['event_type'])
-        self.assertEqual('42', event_data['client_id'])
+        self.assertEqual('cl973913', event_data['client_id'])
         self.assertEqual('08-12-2015', event_data['from_date'])
 
     def test_create_client_request(self):

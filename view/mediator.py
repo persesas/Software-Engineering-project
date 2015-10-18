@@ -40,7 +40,7 @@ class Mediator():
         self.login_form.show()
 
     def create_client(self, name, age, address, mail, phone):
-        return self.c.create_client(name, name=name, age=age, address=address, mail=mail, phone=phone)
+        return self.c.create_client(name, name=name, age=age, address=address, mail=mail, phone=phone, events=[])
 
     def create_client_req(self, client_id, event_type, description, from_date, to_date, exp_no,
                           planned_budget, decorations, filming, poster,

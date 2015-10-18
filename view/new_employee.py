@@ -58,16 +58,22 @@ class NewEmployee(QtWidgets.QWidget):
     def onSubmit(self):
         from view.mediator import get_mediator
         m = get_mediator()
-        try:
-            m.create_employee(self.name_edit.text(), self.age_edit.text(), self.address_edit.toPlainText(),
-                        self.mail_edit.text(), self.position_edit.currentText())
-            self.blink_label.setText("Employee created")
-        except KeyError:
-            self.blink_label.setText("This employee already exists")
 
+        if self.isInputValid():
+            try:
+                m.create_employee(self.name_edit.text(), self.age_edit.text(), self.address_edit.toPlainText(),
+                                  self.mail_edit.text(), self.position_edit.currentText())
+                self.blink_label.setText("Employee created")
+            except KeyError:
+                self.blink_label.setText("This employee already exists")
+            self.clear_form()
+        else:
+            self.blink_label.setText('Incorrect input')
 
-        self.clear_form()
         self.blink_label.start(2000)
+
+    def isInputValid(self):
+        return self.name_edit.text() != '' and self.address_edit.toPlainText() != '' and self.mail_edit.text() != ''
 
     def clear_form(self):
         self.name_edit.clear()

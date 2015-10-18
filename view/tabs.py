@@ -13,6 +13,7 @@ class ManagerTabs(QtWidgets.QWidget):
     cp_panel = 'Control Panel'
     new_client = 'New Client'
     hire = 'Hire Employees'
+    hire_req = 'Hire Request'
     new_event = 'New Events'
     new_task = 'New Task'
 
@@ -134,8 +135,11 @@ class ManagerTabs(QtWidgets.QWidget):
             staff_data = m.get_employee('position', '0', all_data=False)
             team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
             # ----
-            sub_teams = ['Photography', 'Decoration']
-            self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data)
+            sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
+            if self.employee_type=='employee':
+                self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data)
+            else:
+                self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data, True)
         else:
             self.task_popup.setFocus()
 
@@ -163,7 +167,7 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
         ids = {c['id']: c['name'] for c in m.get_client()}
 
-        from view.new_client_req import NewClient
+        from view.new_client import NewClient
         nc = NewClient()
 
         self.tabs.addTab(self.event_tab, self.events)
@@ -195,7 +199,7 @@ class ManagerTabs(QtWidgets.QWidget):
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
-        self.tabs.addTab(r, self.hire)
+        self.tabs.addTab(r, self.hire_req)
 
         self.show()
 
@@ -218,7 +222,7 @@ class ManagerTabs(QtWidgets.QWidget):
         self.tabs.addTab(self.event_tab, self.events)
         self.tabs.addTab(self.task_tab, self.tasks)
         self.tabs.addTab(t, self.new_task)
-        self.tabs.addTab(r, self.hire)
+        self.tabs.addTab(r, self.hire_req)
 
         self.show()
 
@@ -240,7 +244,7 @@ class ManagerTabs(QtWidgets.QWidget):
         self.tabs.addTab(self.event_tab, self.events)
         self.tabs.addTab(self.task_tab, self.tasks)
         self.tabs.addTab(t, self.new_task)
-        self.tabs.addTab(r, self.hire)
+        self.tabs.addTab(r, self.hire_req)
 
         self.show()
 

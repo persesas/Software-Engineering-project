@@ -1,4 +1,3 @@
-import datetime
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
@@ -56,15 +55,21 @@ class NewClient(QtWidgets.QWidget):
     def onSubmit(self):
         from view.mediator import get_mediator
         m = get_mediator()
-        try:
-            m.create_client(self.name_edit.text(), self.age_edit.text(), self.address_edit.toPlainText(),
-                        self.mail_edit.text(), self.phone_edit.text())
-            self.blink_label.setText('Request submitted')
-        except KeyError:
-            self.blink_label.setText('Client already exists')
+        if self.isInputValid():
+            try:
+                m.create_client(self.name_edit.text(), self.age_edit.text(), self.address_edit.toPlainText(),
+                            self.mail_edit.text(), self.phone_edit.text())
+                self.blink_label.setText('Request submitted')
+            except KeyError:
+                self.blink_label.setText('Client already exists')
+            self.clear_form()
+        else:
+            self.blink_label.setText('Incorrect input')
 
-        self.clear_form()
         self.blink_label.start(2000)
+
+    def isInputValid(self):
+        return self.name_edit.text() != '' and self.address_edit.toPlainText() != '' and self.mail_edit.text() != ''
 
     def clear_form(self):
         self.name_edit.clear()

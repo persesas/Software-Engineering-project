@@ -17,7 +17,7 @@ class Base(QtWidgets.QWidget):
         # Initialize widgets
         menu_bar = self._create_menu_bar()
 
-        dpt_label = QtWidgets.QLabel(self.department)
+        dpt_label = QtWidgets.QLabel('Department : ' + self.department)
         user_label = QtWidgets.QLabel('Logged in as: {}'.format(self.name))
 
         logout_btn = QtWidgets.QPushButton('Logout')

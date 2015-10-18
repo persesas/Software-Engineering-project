@@ -152,27 +152,35 @@ class ClientReq(QtWidgets.QWidget):
     def onSubmit(self):
         from view.mediator import get_mediator
         m = get_mediator()
-        if not self.data:
-            m.create_client_req(self.client_rec_no_edit.currentText(), self.event_type_edit.text(),
-                           self.description_edit.toPlainText(), self.from_date.text(),
-                           self.to_date.text(), self.exp_no_edit.text(),
-                           self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
-                           self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
-                           self.food_edit.toPlainText(), self.music_edit.toPlainText(),
-                           self.computer_edit.toPlainText(), self.other_edit.toPlainText())
+        if self.isInputValid():
+            if not self.data:
+                m.create_client_req(self.client_rec_no_edit.currentText(), self.event_type_edit.text(),
+                                    self.description_edit.toPlainText(), self.from_date.text(),
+                                    self.to_date.text(), self.exp_no_edit.text(),
+                                    self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
+                                    self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
+                                    self.food_edit.toPlainText(), self.music_edit.toPlainText(),
+                                    self.computer_edit.toPlainText(), self.other_edit.toPlainText())
 
-            self.clear_form()
-            self.blink_label.start(2000)
+                self.clear_form()
+                self.blink_label.start(2000)
+            else:
+                m.update_event(self.data['id'], self.client_rec_no_edit.currentText(), self.event_type_edit.text(),
+                               self.description_edit.toPlainText(), self.from_date.text(),
+                               self.to_date.text(), self.exp_no_edit.text(),
+                               self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
+                               self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
+                               self.food_edit.toPlainText(), self.music_edit.toPlainText(),
+                               self.computer_edit.toPlainText(), self.other_edit.toPlainText())
+
+                self.hide()
         else:
-            m.update_event(self.data['id'], self.client_rec_no_edit.currentText(), self.event_type_edit.text(),
-                           self.description_edit.toPlainText(), self.from_date.text(),
-                           self.to_date.text(), self.exp_no_edit.text(),
-                           self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
-                           self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
-                           self.food_edit.toPlainText(), self.music_edit.toPlainText(),
-                           self.computer_edit.toPlainText(), self.other_edit.toPlainText())
+            self.blink_label.setText('Incorrect input')
+            self.blink_label.start(2000)
 
-            self.hide()
+    def isInputValid(self):
+        return self.event_type_edit.text() != '' and self.planned_budget_edit.text() != '' \
+               and self.exp_no_edit.text() != ''
 
     def _populate(self):
         self.event_type_edit.setText(self.data['event_type'])

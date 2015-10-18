@@ -5,14 +5,14 @@ from view.timed_label import BlinkLabel
 
 
 class TaskReq(QtWidgets.QWidget):
-    def __init__(self, event_ids, staff_names, sub_teams, data=None):
+    def __init__(self, event_ids, staff_names, sub_teams, data=None, restricted=False):
         super().__init__()
 
         self.event_ids = event_ids
         self.staff_names = staff_names
         self.sub_teams = sub_teams
         self.data = data
-
+        self.restricted = restricted
         self.initUI()
 
     def initUI(self):
@@ -66,6 +66,11 @@ class TaskReq(QtWidgets.QWidget):
         main_layout.addLayout(extras_layout)
 
         if self.data: self._populate()
+        if self.restricted:
+            self.priority_edit.setEnabled(False)
+            self.event_id_edit.setEnabled(False)
+            self.staff_name_edit.setEnabled(False)
+            self.sub_teams_edit.setEnabled(False)
 
         self.setLayout(main_layout)
         self.show()
@@ -73,18 +78,27 @@ class TaskReq(QtWidgets.QWidget):
     def onSubmit(self):
         from view.mediator import get_mediator
         m = get_mediator()
-        if not self.data:
-            m.create_task(self.sub_teams_edit.currentText(), self.event_id_edit.currentText(),
-                          self.description_edit.toPlainText(), self.staff_name_edit.currentText(),
-                          self.priority_edit.currentText())
-            self.clear_form()
-            self.blink_label.start(2000)
-        else:
-            m.update_task(self.data['id'], self.sub_teams_edit.currentText(), self.event_id_edit.currentText(),
-                          self.description_edit.toPlainText(), self.staff_name_edit.currentText(),
-                          self.priority_edit.currentText())
-            self.hide()
+        if self.isInputValid():
+            if not self.data:
+                m.create_task(self.sub_teams_edit.currentText(), self.event_id_edit.currentText(),
+                              self.description_edit.toPlainText(), self.staff_name_edit.currentText(),
+                              self.priority_edit.currentText())
+                self.blink_label.setText('Task submitted')
+                self.clear_form()
 
+                self.blink_label.start(2000)
+            else:
+                m.update_task(self.data['id'], self.sub_teams_edit.currentText(), self.event_id_edit.currentText(),
+                              self.description_edit.toPlainText(), self.staff_name_edit.currentText(),
+                              self.priority_edit.currentText())
+                self.hide()
+        else:
+            self.blink_label.setText('Incorrect input')
+            self.blink_label.start(2000)
+
+
+    def isInputValid(self):
+        return self.description_edit.toPlainText() != ''
 
     def _populate(self):
         self.description_edit.setText(self.data['description'])
@@ -99,8 +113,6 @@ class TaskReq(QtWidgets.QWidget):
 
         i4 = self.priority_edit.findText(self.data['priority'])
         self.priority_edit.setCurrentIndex(i4)
-
-
 
     def clear_form(self):
         self.sub_teams_edit.setCurrentIndex(0)
