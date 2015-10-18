@@ -153,7 +153,7 @@ class ClientReq(QtWidgets.QWidget):
         from view.mediator import get_mediator
         m = get_mediator()
         if not self.data:
-            m.create_event(self.client_rec_no_edit.currentText(), self.event_type_edit.text(),
+            m.create_client_req(self.client_rec_no_edit.currentText(), self.event_type_edit.text(),
                            self.description_edit.toPlainText(), self.from_date.text(),
                            self.to_date.text(), self.exp_no_edit.text(),
                            self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),

@@ -15,7 +15,7 @@ Client = id(str), name(str), age(int), address(str), email(str), phone(str),
 Employee = id(str), name(str), age(int), address(str), position(str)
 Event = id(str), type(string), from(date), to(date), attendees(int)
 		preferences(str), budget(int), name(str), status(str)
-Task = id(str), subject(str), priority(int), sender(employee id), description(str)
+Task = id(str), sub_team(str), priority(str), assign_to(employee id), description(str), event_id(str)
 
 Support tables:
 Auth = username(str), password(hashed + salt str), salt(str), user_id(cl, empl str)

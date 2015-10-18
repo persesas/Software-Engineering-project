@@ -23,7 +23,9 @@ class TaskReq(QtWidgets.QWidget):
 
         self.staff_name_edit = QtWidgets.QComboBox()
         self.staff_name_edit.setEditable(False)
-        self.staff_name_edit.addItems([self.staff_names['id'] + '-' + self.staff_names['name']])
+        for s in self.staff_names:
+            t = s['id'] + '-' + s['name']
+            self.staff_name_edit.addItem(t)
 
         self.sub_teams_edit = QtWidgets.QComboBox()
         self.sub_teams_edit.setEditable(False)
@@ -86,10 +88,23 @@ class TaskReq(QtWidgets.QWidget):
 
     def _populate(self):
         self.description_edit.setText(self.data['description'])
+        i1 = self.sub_teams_edit.findText(self.data['sub_team'])
+        self.sub_teams_edit.setCurrentIndex(i1)
+
+        i2 = self.event_id_edit.findText(self.data['event_id'])
+        self.event_id_edit.setCurrentIndex(i2)
+
+        i3 = self.staff_name_edit.findText(self.data['staff_id'])
+        self.staff_name_edit.setCurrentIndex(i3)
+
+        i4 = self.priority_edit.findText(self.data['priority'])
+        self.priority_edit.setCurrentIndex(i4)
+
+
 
     def clear_form(self):
-        self.sub_teams_edit.clear()
-        self.event_id_edit.clear()
+        self.sub_teams_edit.setCurrentIndex(0)
+        self.event_id_edit.setCurrentIndex(0)
         self.description_edit.clear()
-        self.staff_name_edit.clear()
-        self.priority_edit.clear()
+        self.staff_name_edit.setCurrentIndex(0)
+        self.priority_edit.setCurrentIndex(0)

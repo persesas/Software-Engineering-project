@@ -17,7 +17,11 @@ class Controller():
         return self.a.create_user('client', username, **kwargs)
 
     def create_client_req(self, **kwargs):
-        return self.db.new_event(**kwargs)
+        event_id = self.db.new_event(**kwargs)
+        clients_events = self.db.get_client('id',kwargs['client_id'], all_data=False)[0]['events']
+        clients_events.append(event_id)
+        self.db.update_client_events(kwargs['client_id'], clients_events)
+
 
     def create_employee(self, username, **kwargs):
         return self.a.create_user('employee', username, **kwargs)

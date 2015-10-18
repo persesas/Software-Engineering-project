@@ -4,8 +4,8 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 
-class ManagerTabs(QtWidgets.QWidget):
 
+class ManagerTabs(QtWidgets.QWidget):
     clients = 'Clients'
     employees = 'Employees'
     events = 'Events'
@@ -19,9 +19,11 @@ class ManagerTabs(QtWidgets.QWidget):
     event_popup = None
     task_popup = None
 
-    def __init__(self, empl_type):
+    def __init__(self, empl_type, user_id, name):
         super().__init__()
-        self.empy_type = empl_type
+        self.user_id = user_id
+        self.name = name
+        self.employee_type = empl_type
 
         self.initUI()
         getattr(self, '_show_{}'.format(empl_type))()
@@ -38,9 +40,6 @@ class ManagerTabs(QtWidgets.QWidget):
         self.layout.addWidget(self.tabs)
 
         self.setLayout(self.layout)
-
-
-
 
     def _rearrange(self, table, cols):
         tbl = []
@@ -79,7 +78,7 @@ class ManagerTabs(QtWidgets.QWidget):
         data = m.get_event()
 
         event_table = self._create_table(
-                           self._rearrange(data, ['id', 'client_id', 'from_date', 'to_date', 'seen']))
+            self._rearrange(data, ['id', 'client_id', 'from_date', 'to_date', 'seen']))
         event_table.cellDoubleClicked.connect(self.onEventDoubleClick)
         # Event contains a lot of information, hide some...
         for i in range(5, event_table.columnCount()):
@@ -91,7 +90,11 @@ class ManagerTabs(QtWidgets.QWidget):
         from view.mediator import get_mediator
         m = get_mediator()
 
-        data = m.get_task()
+
+        if self.employee_type == 'team_member':
+            data = m.get_task('staff_id', '{}-{}'.format(self.user_id, self.name), all_data=False)
+        else:
+            data = m.get_task()
 
         task_table = self._create_table(self._rearrange(data, ['id', 'priority']))
         task_table.cellDoubleClicked.connect(self.onTaskDoubleClick)
@@ -105,14 +108,14 @@ class ManagerTabs(QtWidgets.QWidget):
             m = get_mediator()
             # get the client id from the table
             cl_id = self.event_tab.item(row, 1).text()
-            #the event id
+            # the event id
             ev_id = self.event_tab.item(row, 0).text()
             event_data = m.get_event('id', ev_id, all_data=False)[0]
-            event_data.update({'id':ev_id})
+            event_data.update({'id': ev_id})
             # and his/her name
             name = m.get_client('id', cl_id, all_data=False)[0]['name']
 
-            self.event_popup = ClientReq({cl_id:name}, event_data)
+            self.event_popup = ClientReq({cl_id: name}, event_data)
         else:
             self.event_popup.setFocus()
 
@@ -124,16 +127,14 @@ class ManagerTabs(QtWidgets.QWidget):
 
             task_id = self.task_tab.item(row, 0).text()
             task_data = m.get_task('id', task_id, all_data=False)[0]
-            task_data.update({'id':task_id})
+            task_data.update({'id': task_id})
 
             event_ids = [c['id'] for c in m.get_event()]
             # ----
-            staff_data = m.get_employee('position', '0')[0]
-            team_members = {'id':staff_data['id'], 'name':staff_data['name']}
+            staff_data = m.get_employee('position', '0', all_data=False)
+            team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
             # ----
             sub_teams = ['Photography', 'Decoration']
-
-
             self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data)
         else:
             self.task_popup.setFocus()
@@ -147,7 +148,7 @@ class ManagerTabs(QtWidgets.QWidget):
     def _show_customer_service(self):
         from view.mediator import get_mediator
         m = get_mediator()
-        ids = {c['id']:c['name'] for c in m.get_client()}
+        ids = {c['id']: c['name'] for c in m.get_client()}
 
         from view.event_req import ClientReq
         cr = ClientReq(ids)
@@ -160,7 +161,7 @@ class ManagerTabs(QtWidgets.QWidget):
         # Retrieve the client IDs
         from view.mediator import get_mediator
         m = get_mediator()
-        ids = {c['id']:c['name'] for c in m.get_client()}
+        ids = {c['id']: c['name'] for c in m.get_client()}
 
         from view.new_client_req import NewClient
         nc = NewClient()
@@ -201,10 +202,21 @@ class ManagerTabs(QtWidgets.QWidget):
     def _show_production(self):
         from view.recruitment_req import RecruitmentReq
         from view.task_req import TaskReq
+        from view.mediator import get_mediator
+
+        m = get_mediator()
+
         r = RecruitmentReq()
-        t = TaskReq("1", "2", "3")
+        sub_teams = ['Photography', 'Decorations']
+        event_ids = [c['id'] for c in m.get_event()]
+
+        staff_data = m.get_employee('position', '0', all_data=False)
+        team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
+
+        t = TaskReq(event_ids, team_members, sub_teams)
 
         self.tabs.addTab(self.event_tab, self.events)
+        self.tabs.addTab(self.task_tab, self.tasks)
         self.tabs.addTab(t, self.new_task)
         self.tabs.addTab(r, self.hire)
 
@@ -213,10 +225,20 @@ class ManagerTabs(QtWidgets.QWidget):
     def _show_service(self):
         from view.recruitment_req import RecruitmentReq
         from view.task_req import TaskReq
+        from view.mediator import get_mediator
+        m = get_mediator()
+
         r = RecruitmentReq()
-        t = TaskReq("1", "2", "3")
+        sub_teams = ['Photography', 'Decorations']
+        event_ids = [c['id'] for c in m.get_event()]
+
+        staff_data = m.get_employee('position', '0')
+        team_members = {'id': staff_data['id'], 'name': staff_data['name']}
+
+        t = TaskReq(event_ids, team_members, sub_teams)
 
         self.tabs.addTab(self.event_tab, self.events)
+        self.tabs.addTab(self.task_tab, self.tasks)
         self.tabs.addTab(t, self.new_task)
         self.tabs.addTab(r, self.hire)
 

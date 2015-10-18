@@ -33,7 +33,7 @@ class Mediator():
         pos = empl_data['position']
 
         self.base = Base(name, self.roles[pos].title().replace('_', ' '), username)
-        self.m = ManagerTabs(self.roles[pos])
+        self.m = ManagerTabs(self.roles[pos], user_id, name)
         self.base.set_central_widget(self.m)
 
     def logout(self):
@@ -52,8 +52,9 @@ class Mediator():
                                         filming=filming, poster=poster, food=food, music=music, computer=computer,
                                         other=other)
 
-    def create_employee(self, name, age, address, mail, phone):
-        return self.c.create_employee(name, name=name, age=age, address=address, mail=mail, phone=phone)
+    def create_employee(self, name, age, address, mail, position):
+        return self.c.create_employee(name, name=name, age=age, address=address, mail=mail,
+                                      position=position)
 
     def create_task(self, sub_team, event_id, description, staff_id, priority):
         self.c.create_task(sub_team=sub_team, event_id=event_id, description=description, staff_id=staff_id,
