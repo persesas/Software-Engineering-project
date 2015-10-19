@@ -129,7 +129,7 @@ class Database():
         #                  food(str), music(str), computer(str), other(str)
         # After creating a new event, we have to add it in the clients' event list
         user_id = 'ev' + self._gen_id()
-        data = {'id': user_id, 'seen': False}
+        data = {'id': user_id}
         data.update(kwargs)
         self.insert('event', data)
 

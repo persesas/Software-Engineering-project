@@ -77,9 +77,10 @@ class ManagerTabs(QtWidgets.QWidget):
 
         data = m.get_event()
         event_table = self._create_table(
-            self._rearrange(data, ['id', 'client_id', 'event_type', 'description', 'from_date', 'to_date', 'exp_no',
+            self._rearrange(data, ['id', 'client_id', 'event_type', 'description', 'approved', 'from_date', 'to_date',
+                                   'exp_no',
                                    'planned_budget', 'decorations', 'filming', 'poster', 'food', 'music', 'computer',
-                                   'other', 'seen']))
+                                   'other']))
         event_table.cellDoubleClicked.connect(self.onEventDoubleClick)
         # Event contains a lot of information, hide some...
         for i in range(8, event_table.columnCount()):
@@ -114,8 +115,8 @@ class ManagerTabs(QtWidgets.QWidget):
             event_data.update({'id': ev_id})
             # and his/her name
             name = m.get_client('id', cl_id, all_data=False)[0]['name']
-
-            self.event_popup = ClientReq({cl_id: name}, event_data)
+            self.event_popup = ClientReq({cl_id: name}, event_data,
+                                         self.employee_type == 'senior_customer_service_officer')
         else:
             self.event_popup.setFocus()
 

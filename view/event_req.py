@@ -7,9 +7,9 @@ from view.timed_label import BlinkLabel
 
 
 class ClientReq(QtWidgets.QWidget):
-    def __init__(self, client_ids, data=None):
+    def __init__(self, client_ids, data=None, enable_approve=False):
         super().__init__()
-
+        self.enable_approve = enable_approve
         self.client_ids = client_ids
         self.data = data
 
@@ -60,12 +60,16 @@ class ClientReq(QtWidgets.QWidget):
         self.exp_no_edit = QtWidgets.QLineEdit()
         planned_budget_label = QtWidgets.QLabel('Planned budget :')
         self.planned_budget_edit = QtWidgets.QLineEdit()
-
+        approved_label = QtWidgets.QLabel('Approved : ')
+        self.approved_check_box = QtWidgets.QCheckBox()
+        self.approved_check_box.setEnabled(self.enable_approve)
         top_right_layout = QtWidgets.QGridLayout()
         top_right_layout.addWidget(exp_no_label, 0, 0)
         top_right_layout.addWidget(self.exp_no_edit, 0, 1)
         top_right_layout.addWidget(planned_budget_label, 1, 0)
         top_right_layout.addWidget(self.planned_budget_edit, 1, 1)
+        top_right_layout.addWidget(approved_label, 2, 0)
+        top_right_layout.addWidget(self.approved_check_box, 2, 1)
 
         # --- CENTER ---
         decorations_group = QtWidgets.QGroupBox("Decorations")
@@ -160,7 +164,8 @@ class ClientReq(QtWidgets.QWidget):
                                     self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
                                     self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
                                     self.food_edit.toPlainText(), self.music_edit.toPlainText(),
-                                    self.computer_edit.toPlainText(), self.other_edit.toPlainText())
+                                    self.computer_edit.toPlainText(), self.other_edit.toPlainText(),
+                                    self.approved_check_box.isChecked())
 
                 self.clear_form()
                 self.blink_label.start(2000)
@@ -171,11 +176,12 @@ class ClientReq(QtWidgets.QWidget):
                                self.planned_budget_edit.text(), self.decorations_edit.toPlainText(),
                                self.filming_edit.toPlainText(), self.poster_edit.toPlainText(),
                                self.food_edit.toPlainText(), self.music_edit.toPlainText(),
-                               self.computer_edit.toPlainText(), self.other_edit.toPlainText())
+                               self.computer_edit.toPlainText(),
+                               self.other_edit.toPlainText(), self.approved_check_box.isChecked())
 
                 self.hide()
         else:
-            self.blink_label.setText('Incorrect input')
+            self.blink_label.setText('Empty fields')
             self.blink_label.start(2000)
 
     def isInputValid(self):
@@ -196,6 +202,7 @@ class ClientReq(QtWidgets.QWidget):
         self.music_edit.setText(self.data['music'])
         self.computer_edit.setText(self.data['computer'])
         self.other_edit.setText(self.data['other'])
+        self.approved_check_box.setChecked(self.data['approved'])
 
     def clear_form(self):
         self.event_type_edit.clear()
@@ -211,3 +218,4 @@ class ClientReq(QtWidgets.QWidget):
         self.music_edit.clear()
         self.computer_edit.clear()
         self.other_edit.clear()
+        self.approved_check_box.setChecked(False)

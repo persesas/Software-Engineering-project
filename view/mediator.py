@@ -43,13 +43,13 @@ class Mediator:
 
     def create_client_req(self, client_id, event_type, description, from_date, to_date, exp_no,
                           planned_budget, decorations, filming, poster,
-                          food, music, computer, other):
+                          food, music, computer, other, approved):
         return self.c.create_client_req(client_id=client_id, event_type=event_type, description=description,
                                         from_date=from_date,
                                         to_date=to_date, exp_no=exp_no, planned_budget=planned_budget,
                                         decorations=decorations,
                                         filming=filming, poster=poster, food=food, music=music, computer=computer,
-                                        other=other)
+                                        other=other, approved=approved)
 
     def create_employee(self, name, age, address, mail, position):
         return self.c.create_employee(name, name=name, age=age, address=address, mail=mail,
@@ -77,13 +77,13 @@ class Mediator:
 
     def update_event(self, ev_id, client_id, event_type, description, from_date, to_date, exp_no,
                      planned_budget, decorations, filming, poster,
-                     food, music, computer, other):
+                     food, music, computer, other, approved):
         return self.c.update_event(id=ev_id, client_id=client_id, event_type=event_type, description=description,
                                    from_date=from_date,
                                    to_date=to_date, exp_no=exp_no, planned_budget=planned_budget,
                                    decorations=decorations,
                                    filming=filming, poster=poster, food=food, music=music, computer=computer,
-                                   other=other)
+                                   other=other, approved=approved)
 
     def _get_data(self, table, col_name, criteria, all_data):
         return getattr(self.c, "get_%s" % table)(col_name, criteria, all_data)
