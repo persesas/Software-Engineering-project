@@ -185,9 +185,12 @@ class ManagerTabs(QtWidgets.QWidget):
         self.show()
 
     def _show_administration(self):
+        from view.recruitment_req import RecruitmentReq
+        r = RecruitmentReq()
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
+        self.tabs.addTab(r, self.hire_req)
 
         self.show()
 
@@ -209,11 +212,11 @@ class ManagerTabs(QtWidgets.QWidget):
         from view.financial_req import FinancialReq
 
         m = get_mediator()
-        f = FinancialReq()
 
         r = RecruitmentReq()
         sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]
+        f = FinancialReq(event_ids)
 
         staff_data = m.get_employee('position', '0', all_data=False)
         team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
@@ -236,10 +239,10 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
 
         r = RecruitmentReq()
-        f = FinancialReq()
 
         sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]
+        f = FinancialReq(event_ids)
 
         staff_data = m.get_employee('position', '0', all_data=False)
         team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
@@ -255,13 +258,10 @@ class ManagerTabs(QtWidgets.QWidget):
         self.show()
 
     def _show_vice_president(self):
-        from view.recruitment_req import RecruitmentReq
-        r = RecruitmentReq()
 
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
-        self.tabs.addTab(r, self.hire_req)
         self.show()
 
     def _create_table(self, data):
