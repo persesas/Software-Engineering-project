@@ -1,4 +1,3 @@
-
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
@@ -20,12 +19,12 @@ class RecruitmentReq(QtWidgets.QWidget):
         job_title_label = QtWidgets.QLabel('Job title')
         job_description_label = QtWidgets.QLabel('Job description :')
 
-        years_of_exp_edit = QtWidgets.QLineEdit()
-        job_title_edit = QtWidgets.QLineEdit()
-        job_description_edit= QtWidgets.QTextEdit()
+        self.years_of_exp_edit = QtWidgets.QLineEdit()
+        self.job_title_edit = QtWidgets.QLineEdit()
+        self.job_description_edit = QtWidgets.QTextEdit()
 
         full_time_button = QtWidgets.QRadioButton('Full time')
-        part_time_button = administration_button = QtWidgets.QRadioButton('Part time')
+        part_time_button = QtWidgets.QRadioButton('Part time')
         administration_button = QtWidgets.QRadioButton('Administration')
         services_button = QtWidgets.QRadioButton('Services')
         production_button = QtWidgets.QRadioButton('Production')
@@ -34,7 +33,7 @@ class RecruitmentReq(QtWidgets.QWidget):
         submit_button = QtWidgets.QPushButton("Submit")
         submit_button.clicked.connect(self.onSubmit)
 
-        #Initialize layouts
+        # Initialize layouts
         grid_layout_dpt = QtWidgets.QGridLayout()
         grid_layout_dpt.addWidget(administration_button, 0, 0)
         grid_layout_dpt.addWidget(services_button, 0, 1)
@@ -43,11 +42,11 @@ class RecruitmentReq(QtWidgets.QWidget):
 
         grid_layout = QtWidgets.QGridLayout()
         grid_layout.addWidget(years_of_exp_label, 2, 0)
-        grid_layout.addWidget(years_of_exp_edit, 2, 1)
+        grid_layout.addWidget(self.years_of_exp_edit, 2, 1)
         grid_layout.addWidget(job_title_label, 3, 0)
-        grid_layout.addWidget(job_title_edit, 3, 1)
+        grid_layout.addWidget(self.job_title_edit, 3, 1)
         grid_layout.addWidget(job_description_label, 4, 0)
-        grid_layout.addWidget(job_description_edit, 4, 1)
+        grid_layout.addWidget(self.job_description_edit, 4, 1)
 
         contract_layout = QtWidgets.QHBoxLayout()
         type_button_group = QtWidgets.QGroupBox("Contract type :")
@@ -76,4 +75,13 @@ class RecruitmentReq(QtWidgets.QWidget):
         self.show()
 
     def onSubmit(self):
+        if self.isInputValid():
+            self.blink_label.setText('Request submitted')
+        else:
+            self.blink_label.setText('Empty field(s)')
         self.blink_label.start(2000)
+
+
+    def isInputValid(self):
+        return self.job_description_edit.toPlainText() != '' and self.job_title_edit.text() != '' \
+               and self.years_of_exp_edit.text() != ''

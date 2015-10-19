@@ -64,7 +64,7 @@ class NewClient(QtWidgets.QWidget):
                 self.blink_label.setText('Client already exists')
             self.clear_form()
         else:
-            self.blink_label.setText('Incorrect input')
+            self.blink_label.setText('Empty field(s)')
 
         self.blink_label.start(2000)
 

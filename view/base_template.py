@@ -12,7 +12,7 @@ class Base(QtWidgets.QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(300, 150, 800, 600)
+        self.setGeometry(300, 150, 1000, 600)
 
         # Initialize widgets
         menu_bar = self._create_menu_bar()

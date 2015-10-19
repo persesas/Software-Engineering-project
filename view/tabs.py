@@ -13,8 +13,9 @@ class ManagerTabs(QtWidgets.QWidget):
     new_client = 'New Client'
     hire = 'Hire Employees'
     hire_req = 'Hire Request'
-    new_event = 'New Events'
+    new_event = 'New Event'
     new_task = 'New Task'
+    financial_req = 'Extra Budget Request'
 
     event_popup = None
     task_popup = None
@@ -134,10 +135,10 @@ class ManagerTabs(QtWidgets.QWidget):
             team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
             # ----
             sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
-            if self.employee_type == 'employee':
-                self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data)
-            else:
+            if self.employee_type == 'team_member':
                 self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data, True)
+            else:
+                self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data, False)
         else:
             self.task_popup.setFocus()
 
@@ -205,8 +206,10 @@ class ManagerTabs(QtWidgets.QWidget):
         from view.recruitment_req import RecruitmentReq
         from view.task_req import TaskReq
         from view.mediator import get_mediator
+        from view.financial_req import FinancialReq
 
         m = get_mediator()
+        f = FinancialReq()
 
         r = RecruitmentReq()
         sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
@@ -221,6 +224,7 @@ class ManagerTabs(QtWidgets.QWidget):
         self.tabs.addTab(self.task_tab, self.tasks)
         self.tabs.addTab(t, self.new_task)
         self.tabs.addTab(r, self.hire_req)
+        self.tabs.addTab(f, self.financial_req)
 
         self.show()
 
@@ -228,14 +232,17 @@ class ManagerTabs(QtWidgets.QWidget):
         from view.recruitment_req import RecruitmentReq
         from view.task_req import TaskReq
         from view.mediator import get_mediator
+        from view.financial_req import FinancialReq
         m = get_mediator()
 
         r = RecruitmentReq()
+        f = FinancialReq()
+
         sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]
 
-        staff_data = m.get_employee('position', '0')
-        team_members = {'id': staff_data['id'], 'name': staff_data['name']}
+        staff_data = m.get_employee('position', '0', all_data=False)
+        team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
 
         t = TaskReq(event_ids, team_members, sub_teams)
 
@@ -243,14 +250,18 @@ class ManagerTabs(QtWidgets.QWidget):
         self.tabs.addTab(self.task_tab, self.tasks)
         self.tabs.addTab(t, self.new_task)
         self.tabs.addTab(r, self.hire_req)
+        self.tabs.addTab(f, self.financial_req)
 
         self.show()
 
     def _show_vice_president(self):
+        from view.recruitment_req import RecruitmentReq
+        r = RecruitmentReq()
+
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
-        self.tabs.addTab(self.hire_req, self.hire_req)
+        self.tabs.addTab(r, self.hire_req)
         self.show()
 
     def _create_table(self, data):

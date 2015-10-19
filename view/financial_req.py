@@ -1,6 +1,6 @@
-import datetime
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
+from view.timed_label import BlinkLabel
 
 
 class FinancialReq(QtWidgets.QWidget):
@@ -21,6 +21,8 @@ class FinancialReq(QtWidgets.QWidget):
         production_button = QtWidgets.QRadioButton('Production')
         financial_button = QtWidgets.QRadioButton('Financial')
 
+        submit_button = QtWidgets.QPushButton('Submit')
+        submit_button.clicked.connect(self.onSubmit)
         project_ref_label = QtWidgets.QLabel('Project reference :')
         project_ref_edit = QtWidgets.QLineEdit()
         required_amount_label = QtWidgets.QLabel('Required amount :')
@@ -47,14 +49,24 @@ class FinancialReq(QtWidgets.QWidget):
         grid.addWidget(reason_label, 3, 0)
         grid.addWidget(reason_edit, 3, 1)
 
+        extras_layout = QtWidgets.QHBoxLayout()
+        self.blink_label = BlinkLabel('Request submitted')
+        extras_layout.addWidget(self.blink_label)
+        extras_layout.setAlignment(self.blink_label, Qt.AlignRight)
+
         main_layout = QtWidgets.QVBoxLayout()
         main_layout.addWidget(title_label)
         main_layout.addWidget(group_box)
         main_layout.addLayout(grid)
+        main_layout.addWidget(submit_button)
+        main_layout.addLayout(extras_layout)
         main_layout.setAlignment(title_label, Qt.AlignHCenter)
 
         self.setLayout(main_layout)
         self.show()
+
+    def onSubmit(self):
+        self.blink_label.start(2000)
 
 
 

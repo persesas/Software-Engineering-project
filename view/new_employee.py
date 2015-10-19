@@ -25,7 +25,10 @@ class NewEmployee(QtWidgets.QWidget):
         position_label = QtWidgets.QLabel('Position :')
         self.position_edit = QtWidgets.QComboBox()
         self.position_edit.setEditable(False)
-        self.position_edit.addItems(["0", "1", "2", "3", "4", "5", "6", "7", "8"])
+        # self.position_edit.addItems(["0", "1", "2", "3", "4", "5", "6", "7", "8"])
+        self.position_edit.addItems(
+            ["Team Member", "Customer Service", "Senior Customer Service", "HR", "Administration", "Financial Manager",
+             "Production Manager", "Service Manager", "Vice President"])
         submit_button = QtWidgets.QPushButton('Submit')
         submit_button.clicked.connect(self.onSubmit)
 
@@ -62,13 +65,13 @@ class NewEmployee(QtWidgets.QWidget):
         if self.isInputValid():
             try:
                 m.create_employee(self.name_edit.text(), self.age_edit.text(), self.address_edit.toPlainText(),
-                                  self.mail_edit.text(), self.position_edit.currentText())
+                                  self.mail_edit.text(), self.position_edit.currentIndex())
                 self.blink_label.setText("Employee created")
             except KeyError:
                 self.blink_label.setText("This employee already exists")
             self.clear_form()
         else:
-            self.blink_label.setText('Incorrect input')
+            self.blink_label.setText('Empty field(s)')
 
         self.blink_label.start(2000)
 
