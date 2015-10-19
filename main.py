@@ -18,7 +18,7 @@ if __name__ == '__main__':
     m = get_mediator()
     app = QApplication(sys.argv)
 
-    # gen_db()
+    #gen_db()
     m.login_form = LoginForm()
 
     sys.exit(app.exec_())

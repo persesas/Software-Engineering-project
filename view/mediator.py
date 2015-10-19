@@ -1,11 +1,10 @@
 from controller import Controller
 
 from view.base_template import Base
-from view.login_form import LoginForm
 from view.tabs import ManagerTabs
 
 
-class Mediator():
+class Mediator:
     base = None
     login_form = None
 
@@ -19,8 +18,8 @@ class Mediator():
              '7': 'service',
              '8': 'vice_president'}
 
-    def __init__(self):
-        self.c = Controller()
+    def __init__(self, db_name='db.json'):
+        self.c = Controller(db_name)
 
     def check_credentials(self, username, password):
         return self.c.login(username, password)

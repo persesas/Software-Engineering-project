@@ -1,7 +1,6 @@
 from collections import OrderedDict
 
 from PyQt5 import QtWidgets
-from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 
 
@@ -57,8 +56,7 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
 
         data = m.get_employee()
-
-        empl_table = self._create_table(self._rearrange(data, ['id', 'name']))
+        empl_table = self._create_table(self._rearrange(data, ['id', 'name', 'position', 'mail', 'address', 'age']))
 
         return empl_table
 
@@ -67,8 +65,8 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
 
         data = m.get_client()
-
-        client_table = self._create_table(self._rearrange(data, ['id', 'name']))
+        client_table = self._create_table(self._rearrange(data,
+                                                          ['id', 'name', 'events', 'mail', 'address', 'phone', 'age']))
 
         return client_table
 
@@ -77,12 +75,13 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
 
         data = m.get_event()
-
         event_table = self._create_table(
-            self._rearrange(data, ['id', 'client_id', 'from_date', 'to_date', 'seen']))
+            self._rearrange(data, ['id', 'client_id', 'event_type', 'description', 'from_date', 'to_date', 'exp_no',
+                                   'planned_budget', 'decorations', 'filming', 'poster', 'food', 'music', 'computer',
+                                   'other', 'seen']))
         event_table.cellDoubleClicked.connect(self.onEventDoubleClick)
         # Event contains a lot of information, hide some...
-        for i in range(5, event_table.columnCount()):
+        for i in range(8, event_table.columnCount()):
             event_table.setColumnHidden(i, True)
 
         return event_table
@@ -90,7 +89,6 @@ class ManagerTabs(QtWidgets.QWidget):
     def _create_task_tab(self):
         from view.mediator import get_mediator
         m = get_mediator()
-
 
         if self.employee_type == 'team_member':
             data = m.get_task('staff_id', '{}-{}'.format(self.user_id, self.name), all_data=False)
@@ -136,7 +134,7 @@ class ManagerTabs(QtWidgets.QWidget):
             team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
             # ----
             sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
-            if self.employee_type=='employee':
+            if self.employee_type == 'employee':
                 self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data)
             else:
                 self.task_popup = TaskReq(event_ids, team_members, sub_teams, task_data, True)
@@ -211,7 +209,7 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
 
         r = RecruitmentReq()
-        sub_teams = ['Photography', 'Decorations']
+        sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]
 
         staff_data = m.get_employee('position', '0', all_data=False)
@@ -233,7 +231,7 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
 
         r = RecruitmentReq()
-        sub_teams = ['Photography', 'Decorations']
+        sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]
 
         staff_data = m.get_employee('position', '0')
@@ -252,17 +250,17 @@ class ManagerTabs(QtWidgets.QWidget):
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
-
+        self.tabs.addTab(self.hire_req, self.hire_req)
         self.show()
 
     def _create_table(self, data):
         table = QtWidgets.QTableWidget()
 
         if data:
-            horHeaders = list(data[0].keys())
+            hor_headers = list(data[0].keys())
             table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             table.setRowCount(len(data))
-            table.setColumnCount(len(horHeaders))
+            table.setColumnCount(len(hor_headers))
 
             flags = Qt.NoItemFlags | Qt.ItemIsEnabled
 
@@ -274,6 +272,6 @@ class ManagerTabs(QtWidgets.QWidget):
                     newitem = QtWidgets.QTableWidgetItem(str(item))
                     newitem.setFlags(flags)
                     table.setItem(n, m, newitem)
-            table.setHorizontalHeaderLabels(horHeaders)
+            table.setHorizontalHeaderLabels(hor_headers)
 
         return table
