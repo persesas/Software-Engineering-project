@@ -24,6 +24,16 @@ class ManagerTabs(QtWidgets.QWidget):
     financial_req_popup = None
     recruitment_req_popup = None
 
+    roles = {'0': 'Team member',
+             '1': 'Customer service',
+             '2': 'Senior customer service officer',
+             '3': 'Human resources',
+             '4': 'Administration',
+             '5': 'Financial Manager',
+             '6': 'Production Manager',
+             '7': 'Service Manager',
+             '8': 'Vice president'}
+
     def __init__(self, empl_type, user_id, name):
         super().__init__()
         self.user_id = user_id
@@ -63,6 +73,9 @@ class ManagerTabs(QtWidgets.QWidget):
         m = get_mediator()
 
         data = m.get_employee()
+        for e in data:
+            e.update({'position':self.roles[e['position']]})
+
         empl_table = self._create_table(self._rearrange(data, ['id', 'name', 'position', 'mail', 'address', 'age']))
 
         return empl_table
@@ -217,7 +230,6 @@ class ManagerTabs(QtWidgets.QWidget):
         # Retrieve the client IDs
         from view.mediator import get_mediator
         m = get_mediator()
-        ids = {c['id']: c['name'] for c in m.get_client()}
 
         from view.new_client import NewClient
         nc = NewClient()
@@ -240,9 +252,15 @@ class ManagerTabs(QtWidgets.QWidget):
 
     def _show_administration(self):
         from view.recruitment_req import RecruitmentReq
+        from view.mediator import get_mediator
+        m = get_mediator()
+        from view.financial_req import FinancialReq
+        event_ids = [c['id'] for c in m.get_event()]
+        f = FinancialReq(self.employee_type, event_ids)
         r = RecruitmentReq(self.employee_type)
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
+        self.tabs.addTab(f, self.fin_req)
         self.tabs.addTab(self.event_tab, self.events)
         self.tabs.addTab(r, self.hire_req)
 
