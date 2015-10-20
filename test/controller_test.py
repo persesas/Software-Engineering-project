@@ -136,6 +136,36 @@ class ControllerTest(unittest.TestCase):
         self.assertEqual('reason2', req_data['reason'])
         self.assertEqual('production', req_data['req_dpt'])
 
+    def test_create_recruitment_req(self):
+        c = Controller(self.test_db)
+
+        req_id = c.create_recruitment_req(type='part time', years_exp=321, title='title', description='reason1',
+                                          req_dpt='service')
+        req_data = c.get_recruitment_req('id', req_id)[0]
+
+        self.assertEqual('part time', req_data['type'])
+        self.assertEqual(321, req_data['years_exp'])
+        self.assertEqual('title', req_data['title'])
+        self.assertEqual('reason1', req_data['description'])
+        self.assertEqual('service', req_data['req_dpt'])
+
+    def test_update_recruitment_req(self):
+        c = Controller(self.test_db)
+
+        req_id = c.create_recruitment_req(type='part time', years_exp=321, title='title', description='reason1',
+                                          req_dpt='service')
+
+        updated_rec = {'id': req_id, 'type': 'full time', 'years_exp': 543, 'title': 'title2',
+                       'description': 'description2', 'req_dpt': 'production'}
+        c.update_recruitment_req(**updated_rec)
+
+        req_data = c.get_recruitment_req('id', req_id)[0]
+
+        self.assertEqual('full time', req_data['type'])
+        self.assertEqual(543, req_data['years_exp'])
+        self.assertEqual('title2', req_data['title'])
+        self.assertEqual('description2', req_data['description'])
+        self.assertEqual('production', req_data['req_dpt'])
 
     def test_get_user_id(self):
         c = Controller(self.test_db)

@@ -18,6 +18,7 @@ Event = id(str), client_id(str), event_type (str), description(str), from_date(d
 		music(str), computer(str), other(str)
 Task = id(str), sub_team(str), priority(str), assign_to(employee id), description(str), event_id(str)
 Financial Req = id(str), event_id(str), reason(str), req_dpt(str)
+Recruitment Req = id(str), type(str), years_exp(str), job_title(str), job_description(str), req_dpt(str)
 Support tables:
 Auth = username(str), password(hashed + salt str), salt(str), user_id(cl, empl str)
 """
@@ -26,7 +27,7 @@ Auth = username(str), password(hashed + salt str), salt(str), user_id(cl, empl s
 class Database():
     """Docstring for database manager"""
 
-    tables = ['client', 'event', 'employee', 'task', 'auth', 'financial_req']
+    tables = ['client', 'event', 'employee', 'task', 'auth', 'financial_req', 'recruitment_req']
 
     def __init__(self, name='db.json', purge=False):
         # test initial number of tables
@@ -139,6 +140,23 @@ class Database():
     def update_financial_req(self, new_data):
         # Task id is in the new_data
         self.update('financial_req', new_data, 'id', new_data['id'])
+
+    def new_recruitment_req(self, **kwargs):
+        user_id = 'rr' + self._gen_id()
+        data = {'id': user_id}
+        data.update(kwargs)
+        self.insert('recruitment_req', data)
+        return user_id
+
+    def update_recruitment_req(self, new_data):
+        # Task id is in the new_data
+        self.update('recruitment_req', new_data, 'id', new_data['id'])
+
+    def get_recruitment_req(self, col_name, criteria, all_data=False):
+        if not all_data:
+            return self.tables_db['recruitment_req'].search(where(col_name) == criteria)
+        else:
+            return self.tables_db['recruitment_req'].all()
 
     def new_event(self, **kwargs):
         # After creating a new event, we have to add it in the clients' event list

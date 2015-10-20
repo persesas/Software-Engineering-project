@@ -105,6 +105,30 @@ class MediatorTest(unittest.TestCase):
         self.assertEqual('reason2', fin_req_data['reason'])
         self.assertEqual('req_2', fin_req_data['req_dpt'])
 
+    def test_create_recruitment_req(self):
+        m = Mediator(self.test_db)
+        rec_req_id = m.create_recruitment_req('full time', 123456, 'title job','description1', 'financial')
+        rec_req_data = m.get_recruitment_req('id', rec_req_id)[0]
+
+        self.assertEqual('full time', rec_req_data['type'])
+        self.assertEqual(123456, rec_req_data['years_exp'])
+        self.assertEqual('title job', rec_req_data['title'])
+        self.assertEqual('financial', rec_req_data['req_dpt'])
+        self.assertEqual('description1', rec_req_data['description'])
+
+    def test_update_recruitment_req(self):
+        m = Mediator(self.test_db)
+        rec_req_id = m.create_recruitment_req('full time', 123456, 'title job','description1', 'financial')
+
+        m.update_recruitment_req(rec_req_id, 'part time', 54321, 'title job2', 'description2' ,'financial2')
+        rec_req_data = m.get_recruitment_req('id', rec_req_id)[0]
+
+        self.assertEqual('part time', rec_req_data['type'])
+        self.assertEqual(54321, rec_req_data['years_exp'])
+        self.assertEqual('title job2', rec_req_data['title'])
+        self.assertEqual('financial2', rec_req_data['req_dpt'])
+        self.assertEqual('description2', rec_req_data['description'])
+
     def test_update_task(self):
         m = Mediator(self.test_db)
 

@@ -16,11 +16,13 @@ class ManagerTabs(QtWidgets.QWidget):
     new_event = 'New Event'
     new_task = 'New Task'
     fin_req = 'Financial requests'
+    recs_req = 'Recruitment requests'
     financial_req = 'Extra Budget Request'
 
     event_popup = None
     task_popup = None
     financial_req_popup = None
+    recruitment_req_popup = None
 
     def __init__(self, empl_type, user_id, name):
         super().__init__()
@@ -39,6 +41,7 @@ class ManagerTabs(QtWidgets.QWidget):
         self.event_tab = self._create_event_tab()
         self.task_tab = self._create_task_tab()
         self.financial_req_tab = self._create_financial_req_tab()
+        self.recruitment_req_tab = self._create_recruitment_req_tab()
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.addWidget(self.tabs)
@@ -114,6 +117,28 @@ class ManagerTabs(QtWidgets.QWidget):
                                                           ['id','event_id', 'req_dpt', 'req_amount', 'reason']))
         financial_req_table.cellDoubleClicked.connect(self.onFinReqDoubleClick)
         return financial_req_table
+
+    def _create_recruitment_req_tab(self):
+        from view.mediator import get_mediator
+        m = get_mediator()
+        data = m.get_recruitment_req()
+        recruitment_req_table = self._create_table(self._rearrange(data,
+                                                          ['id', 'req_dpt', 'type', 'years_exp', 'title', 'description']))
+        recruitment_req_table.cellDoubleClicked.connect(self.onRecReqDoubleClick)
+        return recruitment_req_table
+
+    def onRecReqDoubleClick(self, row, col):
+        if not self.recruitment_req_popup or not self.recruitment_req_popup.isVisible():
+            from view.recruitment_req import RecruitmentReq
+            from view.mediator import get_mediator
+            m = get_mediator()
+            # the event id
+            rec_req = self.recruitment_req_tab.item(row, 0).text()
+            fin_req_data = m.get_recruitment_req('id', rec_req, all_data=False)[0]
+            fin_req_data.update({'id': rec_req})
+            self.recruitment_req_popup = RecruitmentReq(self.employee_type, fin_req_data)
+        else:
+            self.recruitment_req_popup.setFocus()
 
     def onEventDoubleClick(self, row, col):
         if not self.event_popup or not self.event_popup.isVisible():
@@ -209,12 +234,13 @@ class ManagerTabs(QtWidgets.QWidget):
 
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(e, self.hire)
+        self.tabs.addTab(self.recruitment_req_tab, self.recs_req)
 
         self.show()
 
     def _show_administration(self):
         from view.recruitment_req import RecruitmentReq
-        r = RecruitmentReq()
+        r = RecruitmentReq(self.employee_type)
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
@@ -224,7 +250,7 @@ class ManagerTabs(QtWidgets.QWidget):
 
     def _show_financial(self):
         from view.recruitment_req import RecruitmentReq
-        r = RecruitmentReq()
+        r = RecruitmentReq(self.employee_type)
 
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
@@ -242,7 +268,7 @@ class ManagerTabs(QtWidgets.QWidget):
 
         m = get_mediator()
 
-        r = RecruitmentReq()
+        r = RecruitmentReq(self.employee_type)
         sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]
         f = FinancialReq(self.employee_type, event_ids)
@@ -267,7 +293,7 @@ class ManagerTabs(QtWidgets.QWidget):
         from view.financial_req import FinancialReq
         m = get_mediator()
 
-        r = RecruitmentReq()
+        r = RecruitmentReq(self.employee_type)
 
         sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]

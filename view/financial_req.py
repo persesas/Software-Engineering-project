@@ -110,7 +110,7 @@ class FinancialReq(QtWidgets.QWidget):
 
 
         else:
-            self.blink_label.setText('Empty fields')
+            self.blink_label.setText('Empty field(s)')
             self.blink_label.start(2000)
 
     def isInputValid(self):

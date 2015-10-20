@@ -39,6 +39,12 @@ class Controller():
     def create_financial_req(self, **kwargs):
         return self.db.new_financial_req(**kwargs)
 
+    def create_recruitment_req(self, **kwargs):
+        return self.db.new_recruitment_req(**kwargs)
+
+    def update_recruitment_req(self, **kwargs):
+        return self.db.update_recruitment_req(kwargs)
+
     def update_financial_req(self, **kwargs):
         self.db.update_financial_req(kwargs)
 
@@ -62,6 +68,9 @@ class Controller():
 
     def get_financial_req(self, col_name='', criteria='', all_data=True):
         return self._get_data('financial_req', col_name, criteria, all_data)
+
+    def get_recruitment_req(self, col_name='', criteria='', all_data=True):
+        return self._get_data('recruitment_req', col_name, criteria, all_data)
 
 
     def _get_data(self, table, col_name, criteria, all_data):

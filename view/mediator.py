@@ -55,6 +55,15 @@ class Mediator:
         return self.c.create_employee(name, name=name, age=age, address=address, mail=mail,
                                       position=position)
 
+    def create_recruitment_req(self, type, years_exp, title, description, dpt_req):
+        return self.c.create_recruitment_req(type=type, years_exp=years_exp, title=title, description=description,
+                                             req_dpt=dpt_req)
+
+    def update_recruitment_req(self, recruitment_id, type, years_exp, title, description, dpt_req):
+        return self.c.update_recruitment_req(id=recruitment_id, type=type, years_exp=years_exp, title=title,
+                                             description=description,
+                                             req_dpt=dpt_req)
+
     def create_task(self, sub_team, event_id, description, staff_id, priority):
         return self.c.create_task(sub_team=sub_team, event_id=event_id, description=description, staff_id=staff_id,
                                   priority=priority)
@@ -72,6 +81,9 @@ class Mediator:
 
     def get_financial_req(self, col_name='', criteria='', all_data=True):
         return self._get_data('financial_req', col_name, criteria, all_data)
+
+    def get_recruitment_req(self, col_name='', criteria='', all_data=True):
+        return self._get_data('recruitment_req', col_name, criteria, all_data)
 
     def get_client(self, col_name='', criteria='', all_data=True):
         return self._get_data('client', col_name, criteria, all_data)

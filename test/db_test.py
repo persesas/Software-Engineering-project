@@ -24,7 +24,7 @@ class ControllerTest(unittest.TestCase):
     def test_db_purge(self):
         db = Database(name=self.test_db, purge=True)
 
-        self.assertEqual(len(db.tables), 6)
+        self.assertEqual(len(db.tables), 7)
 
     def test_new_user(self):
         db = Database(name=self.test_db, purge=True)
@@ -75,6 +75,35 @@ class ControllerTest(unittest.TestCase):
         self.assertEqual('Foo Bar', em_data['name'])
         self.assertEqual('23', em_data['age'])
         self.assertEqual('3', em_data['pos'])
+
+    def test_new_recruitment_req(self):
+        db = Database(name=self.test_db, purge=True)
+        rec_req = db.new_recruitment_req(type='Full time', years_exp='23', title='Manager', description='description1',
+                                         dpt_req='financial')
+        rec_req_data = db.get_recruitment_req('id', rec_req)[0]
+
+        self.assertEqual('Full time', rec_req_data['type'])
+        self.assertEqual('23', rec_req_data['years_exp'])
+        self.assertEqual('Manager', rec_req_data['title'])
+        self.assertEqual('description1', rec_req_data['description'])
+        self.assertEqual('financial', rec_req_data['dpt_req'])
+
+    def test_update_recruitment_req(self):
+        db = Database(name=self.test_db, purge=True)
+        rec_req = db.new_recruitment_req(type='Full time', years_exp='23', title='Manager', description='description1',
+                                         dpt_req='financial')
+
+        db.update_recruitment_req(
+            {'id': rec_req, 'type': 'part time', 'years_exp': '312', 'title': 'employee', 'description': 'desc2',
+             'dpt_req': 'production'})
+
+        rec_req_data = db.get_recruitment_req('id', rec_req)[0]
+
+        self.assertEqual('part time', rec_req_data['type'])
+        self.assertEqual('312', rec_req_data['years_exp'])
+        self.assertEqual('employee', rec_req_data['title'])
+        self.assertEqual('desc2', rec_req_data['description'])
+        self.assertEqual('production', rec_req_data['dpt_req'])
 
     def test_new_task(self):
         db = Database(name=self.test_db, purge=True)
