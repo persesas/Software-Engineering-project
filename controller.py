@@ -22,6 +22,7 @@ class Controller():
         clients_events.append(event_id)
         self.db.update_client_events(kwargs['client_id'], clients_events)
 
+        return event_id
 
     def create_employee(self, username, **kwargs):
         return self.a.create_user('employee', username, **kwargs)

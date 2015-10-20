@@ -56,7 +56,7 @@ class Mediator:
                                       position=position)
 
     def create_task(self, sub_team, event_id, description, staff_id, priority):
-        self.c.create_task(sub_team=sub_team, event_id=event_id, description=description, staff_id=staff_id,
+        return self.c.create_task(sub_team=sub_team, event_id=event_id, description=description, staff_id=staff_id,
                            priority=priority)
 
     def update_task(self, task_id, sub_team, event_id, description, staff_id, priority):

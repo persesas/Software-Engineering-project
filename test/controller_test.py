@@ -10,8 +10,6 @@ from lib.auth import Authentication
 from controller import Controller
 
 
-# test hashed password
-
 class ControllerTest(unittest.TestCase):
     test_db = 'test_db.json'
 
@@ -52,9 +50,8 @@ class ControllerTest(unittest.TestCase):
 
     def test_create_client_request(self):
         c = Controller(self.test_db)
-
-        cl_id = c.create_client_req(name='testName12', age='12', address='address', email='email', phone='phone',
-                                    events=[])
+        #Create a client
+        cl_id = c.create_client('username', name='Foo Bar', age='23', events=[])
 
         event_id = c.create_client_req(client_id=cl_id, event_type='Unicorn exhibition', description='desc',
                                        from_date='09-12-2015', exp_no='exp_no', planned_budget='planned_budget',
@@ -65,15 +62,15 @@ class ControllerTest(unittest.TestCase):
         event_data = c.get_event('id', event_id)[0]
 
         self.assertEqual('Unicorn exhibition', event_data['event_type'])
-        self.assertEqual('cl123456', event_data['client_id'])
+        self.assertEqual(cl_id, event_data['client_id'])
         self.assertEqual('09-12-2015', event_data['from_date'])
 
 
     def test_update_event(self):
         c = Controller(self.test_db)
+        #Create a client
+        cl_id = c.create_client('username', name='Foo Bar', age='23', events=[])
 
-        cl_id = c.create_client_req(name='testName12412', age='12', address='address', email='email', phone='phone',
-                                    events=[])
         event_id = c.create_client_req(event_type='Mohawk fans', from_date='09-12-2042', client_id=cl_id)
 
         updated_event = {'id': event_id, 'from_date': '08-12-2015'}
