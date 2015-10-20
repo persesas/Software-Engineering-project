@@ -36,6 +36,12 @@ class Controller():
     def update_task(self, **kwargs):
         self.db.update_task(kwargs)
 
+    def create_financial_req(self, **kwargs):
+        return self.db.new_financial_req(**kwargs)
+
+    def update_financial_req(self, **kwargs):
+        self.db.update_financial_req(kwargs)
+
     def get_user_id(self, username):
         return self.db.get_login_data(username)['user_id']
 
@@ -53,6 +59,10 @@ class Controller():
 
     def get_event(self, col_name='', criteria='', all_data=True):
         return self._get_data('event', col_name, criteria, all_data)
+
+    def get_financial_req(self, col_name='', criteria='', all_data=True):
+        return self._get_data('financial_req', col_name, criteria, all_data)
+
 
     def _get_data(self, table, col_name, criteria, all_data):
         return getattr(self.db, "get_%s" % table)(col_name, criteria, all_data)

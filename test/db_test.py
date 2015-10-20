@@ -1,4 +1,5 @@
 import sys
+
 if ".." not in sys.path:
     sys.path.append("..")
 
@@ -6,24 +7,24 @@ import unittest
 
 from lib.database import Database
 
-#test hashed password
+
+# test hashed password
 
 class ControllerTest(unittest.TestCase):
-
     test_db = 'test_db.json'
 
     def setUp(self):
-        #Change it
+        # Change it
         Database(name=self.test_db, purge=True)
 
     def tearDown(self):
-        #Change it
+        # Change it
         Database(name=self.test_db, purge=True)
 
     def test_db_purge(self):
         db = Database(name=self.test_db, purge=True)
 
-        self.assertEqual(len(db.tables), 5)
+        self.assertEqual(len(db.tables), 6)
 
     def test_new_user(self):
         db = Database(name=self.test_db, purge=True)
@@ -88,11 +89,38 @@ class ControllerTest(unittest.TestCase):
         db = Database(name=self.test_db, purge=True)
 
         task_id = db.new_task(subject='Underwater photos', priority='Medium')
-        db.update_task({'id':task_id, 'subject':'Aerial dancing', 'priority':'High'})
+        db.update_task({'id': task_id, 'subject': 'Aerial dancing', 'priority': 'High'})
         task_data = db.get_task('id', task_id)[0]
 
         self.assertEqual('Aerial dancing', task_data['subject'])
         self.assertEqual('High', task_data['priority'])
+
+    def test_new_financial_req(self):
+        db = Database(name=self.test_db, purge=True)
+
+        fin_req_id = db.new_financial_req(event_id='ev1234', req_amount=212, reason='reason1',
+                                          req_dpt='req_dpt1')
+        fin_req_data = db.get_financial_req('id', fin_req_id)[0]
+
+        self.assertEqual('ev1234', fin_req_data['event_id'])
+        self.assertEqual(212, fin_req_data['req_amount'])
+        self.assertEqual('reason1', fin_req_data['reason'])
+        self.assertEqual('req_dpt1', fin_req_data['req_dpt'])
+
+    def test_update_financial_req(self):
+        db = Database(name=self.test_db, purge=True)
+
+        fin_req_id = db.new_financial_req(event_id='ev1234', req_amount=212, reason='reason1',
+                                          req_dpt='req_dpt1')
+        db.update_financial_req(
+            {'id': fin_req_id, 'event_id': 'ev9876', 'req_amount': 321321, 'reason': 'reason2', 'req_dpt': 'req_dpt2'})
+
+        fin_req_data = db.get_financial_req('id', fin_req_id)[0]
+
+        self.assertEqual('ev9876', fin_req_data['event_id'])
+        self.assertEqual(321321, fin_req_data['req_amount'])
+        self.assertEqual('reason2', fin_req_data['reason'])
+        self.assertEqual('req_dpt2', fin_req_data['req_dpt'])
 
     def test_new_event(self):
         db = Database(name=self.test_db, purge=True)
@@ -107,7 +135,7 @@ class ControllerTest(unittest.TestCase):
         db = Database(name=self.test_db, purge=True)
 
         event_id = db.new_event(event_type='Mohawk fans', from_date='09-12-2042')
-        db.update_event({'id':event_id, 'from_date':'08-12-2015'})
+        db.update_event({'id': event_id, 'from_date': '08-12-2015'})
         event_data = db.get_event('id', event_id)[0]
 
         self.assertEqual('Mohawk fans', event_data['event_type'])

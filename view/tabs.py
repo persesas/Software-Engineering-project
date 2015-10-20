@@ -15,10 +15,12 @@ class ManagerTabs(QtWidgets.QWidget):
     hire_req = 'Hire Request'
     new_event = 'New Event'
     new_task = 'New Task'
+    fin_req = 'Financial requests'
     financial_req = 'Extra Budget Request'
 
     event_popup = None
     task_popup = None
+    financial_req_popup = None
 
     def __init__(self, empl_type, user_id, name):
         super().__init__()
@@ -36,6 +38,7 @@ class ManagerTabs(QtWidgets.QWidget):
         self.client_tab = self._create_client_tab()
         self.event_tab = self._create_event_tab()
         self.task_tab = self._create_task_tab()
+        self.financial_req_tab = self._create_financial_req_tab()
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.addWidget(self.tabs)
@@ -102,6 +105,16 @@ class ManagerTabs(QtWidgets.QWidget):
 
         return task_table
 
+    def _create_financial_req_tab(self):
+        from view.mediator import get_mediator
+        m = get_mediator()
+
+        data = m.get_financial_req()
+        financial_req_table = self._create_table(self._rearrange(data,
+                                                          ['id','event_id', 'req_dpt', 'req_amount', 'reason']))
+        financial_req_table.cellDoubleClicked.connect(self.onFinReqDoubleClick)
+        return financial_req_table
+
     def onEventDoubleClick(self, row, col):
         if not self.event_popup or not self.event_popup.isVisible():
             from view.event_req import ClientReq
@@ -119,6 +132,20 @@ class ManagerTabs(QtWidgets.QWidget):
                                          self.employee_type == 'senior_customer_service_officer')
         else:
             self.event_popup.setFocus()
+
+    def onFinReqDoubleClick(self, row, col):
+        if not self.financial_req_popup or not self.financial_req_popup.isVisible():
+            from view.financial_req import FinancialReq
+            from view.mediator import get_mediator
+            m = get_mediator()
+            # the event id
+            event_ids = [c['id'] for c in m.get_event()]
+            fin_req = self.financial_req_tab.item(row, 0).text()
+            fin_req_data = m.get_financial_req('id', fin_req, all_data=False)[0]
+            fin_req_data.update({'id': fin_req})
+            self.event_popup = FinancialReq(self.employee_type, event_ids, fin_req_data)
+        else:
+            self.financial_req_popup.setFocus()
 
     def onTaskDoubleClick(self, row, col):
         if not self.event_popup or not self.event_popup.isVisible():
@@ -202,6 +229,7 @@ class ManagerTabs(QtWidgets.QWidget):
         self.tabs.addTab(self.employee_tab, self.employees)
         self.tabs.addTab(self.client_tab, self.clients)
         self.tabs.addTab(self.event_tab, self.events)
+        self.tabs.addTab(self.financial_req_tab, self.fin_req)
         self.tabs.addTab(r, self.hire_req)
 
         self.show()
@@ -217,7 +245,7 @@ class ManagerTabs(QtWidgets.QWidget):
         r = RecruitmentReq()
         sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]
-        f = FinancialReq(event_ids)
+        f = FinancialReq(self.employee_type, event_ids)
 
         staff_data = m.get_employee('position', '0', all_data=False)
         team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]
@@ -243,7 +271,7 @@ class ManagerTabs(QtWidgets.QWidget):
 
         sub_teams = ['Photography', 'Decoration', 'Audio', 'Graphic designer', 'Network Engineer', 'Technician']
         event_ids = [c['id'] for c in m.get_event()]
-        f = FinancialReq(event_ids)
+        f = FinancialReq(self.employee_type, event_ids)
 
         staff_data = m.get_employee('position', '0', all_data=False)
         team_members = [{'id': s['id'], 'name': s['name']} for s in staff_data]

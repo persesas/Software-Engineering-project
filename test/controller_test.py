@@ -50,7 +50,7 @@ class ControllerTest(unittest.TestCase):
 
     def test_create_client_request(self):
         c = Controller(self.test_db)
-        #Create a client
+        # Create a client
         cl_id = c.create_client('username', name='Foo Bar', age='23', events=[])
 
         event_id = c.create_client_req(client_id=cl_id, event_type='Unicorn exhibition', description='desc',
@@ -65,10 +65,9 @@ class ControllerTest(unittest.TestCase):
         self.assertEqual(cl_id, event_data['client_id'])
         self.assertEqual('09-12-2015', event_data['from_date'])
 
-
     def test_update_event(self):
         c = Controller(self.test_db)
-        #Create a client
+        # Create a client
         cl_id = c.create_client('username', name='Foo Bar', age='23', events=[])
 
         event_id = c.create_client_req(event_type='Mohawk fans', from_date='09-12-2042', client_id=cl_id)
@@ -111,6 +110,32 @@ class ControllerTest(unittest.TestCase):
 
         self.assertEqual('Aerial dancing', task_data['subject'])
         self.assertEqual('High', task_data['priority'])
+
+    def test_create_financial_req(self):
+        c = Controller(self.test_db)
+
+        req_id = c.create_financial_req(event_id='ev1234', req_amount=321, reason='reason1', req_dpt='service')
+        req_data = c.get_financial_req('id', req_id)[0]
+
+        self.assertEqual('ev1234', req_data['event_id'])
+        self.assertEqual(321, req_data['req_amount'])
+        self.assertEqual('reason1', req_data['reason'])
+        self.assertEqual('service', req_data['req_dpt'])
+
+    def test_update_financial_req(self):
+        c = Controller(self.test_db)
+
+        req_id = c.create_financial_req(event_id='ev1234', req_amount=321, reason='reason1', req_dpt='service')
+        updated_fin_req = {'id': req_id, 'event_id': 'ev321', 'req_amount': 3213, 'reason': 'reason2',
+                           'req_dpt': 'production'}
+        c.update_financial_req(**updated_fin_req)
+        req_data = c.get_financial_req('id', req_id)[0]
+
+        self.assertEqual('ev321', req_data['event_id'])
+        self.assertEqual(3213, req_data['req_amount'])
+        self.assertEqual('reason2', req_data['reason'])
+        self.assertEqual('production', req_data['req_dpt'])
+
 
     def test_get_user_id(self):
         c = Controller(self.test_db)

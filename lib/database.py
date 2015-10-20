@@ -13,10 +13,11 @@ Main tables:
 Client = id(str), name(str), age(int), address(str), email(str), phone(str),
 		 events(event ids)
 Employee = id(str), name(str), age(int), address(str), position(str)
-Event = id(str), type(string), from(date), to(date), attendees(int)
-		preferences(str), budget(int), name(str), status(str)
+Event = id(str), client_id(str), event_type (str), description(str), from_date(date), to_date(date), exp_no(int),
+		planned_budget(int), decorations(str), filming(str), poster(str),food(str),
+		music(str), computer(str), other(str)
 Task = id(str), sub_team(str), priority(str), assign_to(employee id), description(str), event_id(str)
-
+Financial Req = id(str), event_id(str), reason(str), req_dpt(str)
 Support tables:
 Auth = username(str), password(hashed + salt str), salt(str), user_id(cl, empl str)
 """
@@ -25,7 +26,7 @@ Auth = username(str), password(hashed + salt str), salt(str), user_id(cl, empl s
 class Database():
     """Docstring for database manager"""
 
-    tables = ['client', 'event', 'employee', 'task', 'auth']
+    tables = ['client', 'event', 'employee', 'task', 'auth', 'financial_req']
 
     def __init__(self, name='db.json', purge=False):
         # test initial number of tables
@@ -65,7 +66,7 @@ class Database():
         # update_data = fields to update in a dictionary
         # Only the event and task will ever need updating
         # The client too, to change his events
-        self.tables_db[tbl_name].update(update_data, where(cond_col)==cond_val)
+        self.tables_db[tbl_name].update(update_data, where(cond_col) == cond_val)
 
     # Specific functions
     def new_client(self, **kwargs):
@@ -86,7 +87,7 @@ class Database():
 
     def update_client_events(self, cl_id, events):
         # Events is the updated list of events
-        self.update('client', {'events':events}, 'id', cl_id)
+        self.update('client', {'events': events}, 'id', cl_id)
 
     def new_employee(self, **kwargs):
         # Employee = id(str), name(str), age(int), address(str), boss(employee id)
@@ -120,13 +121,26 @@ class Database():
 
     def update_task(self, new_data):
         # Task id is in the new_data
-        # def update(self, tbl_name, update_data, cond_col, cond_val):
         self.update('task', new_data, 'id', new_data['id'])
 
+    def new_financial_req(self, **kwargs):
+        user_id = 'fr' + self._gen_id()
+        data = {'id': user_id}
+        data.update(kwargs)
+        self.insert('financial_req', data)
+        return user_id
+
+    def get_financial_req(self, col_name, criteria, all_data=False):
+        if not all_data:
+            return self.tables_db['financial_req'].search(where(col_name) == criteria)
+        else:
+            return self.tables_db['financial_req'].all()
+
+    def update_financial_req(self, new_data):
+        # Task id is in the new_data
+        self.update('financial_req', new_data, 'id', new_data['id'])
+
     def new_event(self, **kwargs):
-        # Event = id(str), client_id(str), event_type (str), description(str), from_date(date), to_date(date), exp_no(int),
-        #                  planned_budget(int), decorations(str), filming(str), poster(str),
-        #                  food(str), music(str), computer(str), other(str)
         # After creating a new event, we have to add it in the clients' event list
         user_id = 'ev' + self._gen_id()
         data = {'id': user_id}

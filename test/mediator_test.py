@@ -82,15 +82,33 @@ class MediatorTest(unittest.TestCase):
         self.assertEqual('computer', event_data['computer'])
         self.assertEqual('other', event_data['other'])
 
+    def test_create_financial_req(self):
+        m = Mediator(self.test_db)
+        fin_req_id = m.create_financial_req('ev12345', 123456, 'reason', 'req_dpt')
+        fin_req_data = m.get_financial_req('id', fin_req_id)[0]
+
+        self.assertEqual('ev12345', fin_req_data['event_id'])
+        self.assertEqual(123456, fin_req_data['req_amount'])
+        self.assertEqual('reason', fin_req_data['reason'])
+        self.assertEqual('req_dpt', fin_req_data['req_dpt'])
+
+    def test_update_financial_req(self):
+        m = Mediator(self.test_db)
+        fin_req_id = m.create_financial_req('ev12345', 123456, 'reason', 'req_dpt')
+
+        m.update_financial_req(fin_req_id, 'ev321', 321321, 'reason2', 'req_2')
+
+        fin_req_data = m.get_financial_req('id', fin_req_id, all_data=False)[0]
+
+        self.assertEqual('ev321', fin_req_data['event_id'])
+        self.assertEqual(321321, fin_req_data['req_amount'])
+        self.assertEqual('reason2', fin_req_data['reason'])
+        self.assertEqual('req_2', fin_req_data['req_dpt'])
+
     def test_update_task(self):
         m = Mediator(self.test_db)
-        c = Controller(self.test_db)
 
         task_id = m.create_task('Aerial dancing', 'ev123456', 'description', 'em123456', 'High')
-
-        # updated_task = {'id': task_id, 'sub_team': 'Aerial dancing', 'event_id': 'ev987654',
-        #                 'description': 'description2', 'staff_id': '654321', 'priority': 'High'}
-        # c.update_task(**updated_task)
 
         m.update_task(task_id, 'Hot dancing', 'ev654321', 'description2', 'em9876543', 'Low')
 
@@ -101,7 +119,6 @@ class MediatorTest(unittest.TestCase):
         self.assertEqual('ev654321', task_data['event_id'])
         self.assertEqual('description2', task_data['description'])
         self.assertEqual('em9876543', task_data['staff_id'])
-
 
     def test_update_event(self):
         m = Mediator(self.test_db)
@@ -114,12 +131,12 @@ class MediatorTest(unittest.TestCase):
                                        'filming', 'poster', 'food', 'music', 'computer', 'other', False)
 
         m.update_event(event_id, cl_id_up, 'Dancing', 'description2', '01-01-03', '02-02-05', 30, 200, 'decos',
-                                       'filmings', 'posters', 'foods', 'musics', 'computers', 'others', False)
+                       'filmings', 'posters', 'foods', 'musics', 'computers', 'others', False)
 
         event_data = c.get_event('id', event_id, all_data=False)[0]
 
         self.assertEqual('Dancing', event_data['event_type'])
-        self.assertEqual('description2', event_data ['description'])
+        self.assertEqual('description2', event_data['description'])
         self.assertEqual('01-01-03', event_data['from_date'])
         self.assertEqual('02-02-05', event_data['to_date'])
         self.assertEqual(30, event_data['exp_no'])
