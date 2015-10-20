@@ -40,6 +40,7 @@ class Base(QtWidgets.QWidget):
         self.main_layout.addLayout(top_layout)
         self.setLayout(self.main_layout)
         self.center()
+        self.move(self.pos().x(), 20)
         self.show()
 
     def closeEvent(self, e):
