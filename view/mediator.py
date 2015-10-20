@@ -64,7 +64,7 @@ class Mediator:
                            staff_id=staff_id, priority=priority)
 
     def create_financial_req(self, event_id, req_amount, reason, req_dpt):
-        self.c.create_financial_req(event_id=event_id, req_amount=req_amount, reason=reason, req_dpt=req_dpt)
+        return self.c.create_financial_req(event_id=event_id, req_amount=req_amount, reason=reason, req_dpt=req_dpt)
 
     def update_financial_req(self, fin_req_id, event_id, req_amount, reason, req_dpt):
         self.c.update_financial_req(id=fin_req_id, event_id=event_id, req_amount=req_amount, reason=reason,
